@@ -1,0 +1,34 @@
+import Joi from "joi"
+
+const signUpSchemaVal = Joi.object({
+    userName: Joi.string().min(2).max(20).required(),
+    email: Joi.string().email({ tlds: { allow: ["com"] } }).required(),
+    password: Joi.string().pattern(/^[A-Z][a-z0-9#@]{8,40}$/).required(),
+    rePassword: Joi.valid(Joi.ref('password')).required(),
+    phone: Joi.string().length(11).required(),
+})
+
+const LogInSchemaVal = Joi.object({
+    email: Joi.string().email({ tlds: { allow: ["com"] } }).required(),
+    password: Joi.string().pattern(/^[A-Z][a-z0-9#@]{8,40}$/).required(),
+})
+
+const ChangePasswordSchemaVal = Joi.object({
+    oldPassword: Joi.string().pattern(/^[A-Z][a-z0-9#@]{8,40}$/).required(),
+    newPassword: Joi.string().pattern(/^[A-Z][a-z0-9#@]{8,40}$/).required(),
+})
+
+
+
+const UpdateSchemaVal = Joi.object({
+    userName: Joi.string().min(2).max(20).required(),
+    email: Joi.string().email({ tlds: { allow: ["com"] } }).required(),
+    phone: Joi.string().length(11).required(),
+})
+
+export {
+    signUpSchemaVal,
+    LogInSchemaVal,
+    UpdateSchemaVal,
+    ChangePasswordSchemaVal
+}
