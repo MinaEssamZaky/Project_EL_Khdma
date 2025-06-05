@@ -15,7 +15,7 @@ if (existingUser) {
 }else {
     const saltRounds = parseInt(process.env.SALT_ROUNDS)
         const hashedPassword = await bcrypt.hashSync (password, saltRounds);
-                    const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "1d" });
+                    const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "3minutes " });
                     await sendMail(email, emailToken);
     const user = await userModel.create({userName,email,password:hashedPassword,phone});
     // Assuming sendMail is a function that sends a verification email
@@ -56,6 +56,20 @@ export const VerifyEmail = handleError(async (req, res, next) => {
     user.isConfirmed = true;
     await user.save();
     res.status(200).json({ message: "Email verified successfully" });
+});
+
+export const resendVerifyEmail = handleError(async (req, res, next) => {
+    const { email } = req.body;
+    const user = await userModel.findOne({ email });
+    if (!user) {
+        return next(new AppError("User not found", 404));
+    }
+    if (user.isConfirmed) {
+        return next(new AppError("Email already verified", 400));
+    }
+    const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "3minutes" });
+    await sendMail(email, emailToken);
+    return res.status(200).json({ message: "Verification email resent successfully" });
 });
 
     export const changePassword = handleError(async(req,res,next)=>{
@@ -140,6 +154,7 @@ export const GitAllUsers = handleError(async (req, res, next) => {
     const users = await userModel.find({ role: 'User' });
     return res.status(200).json({ message: "All Users", users });
 });
+
 
 export const GitAllAdmins = handleError(async (req, res, next) => {
     if (req.user.role !== 'SuperAdmin' ) {
