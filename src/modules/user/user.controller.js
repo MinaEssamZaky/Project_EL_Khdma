@@ -15,7 +15,7 @@ if (existingUser) {
 }else {
     const saltRounds = parseInt(process.env.SALT_ROUNDS)
         const hashedPassword = await bcrypt.hashSync (password, saltRounds);
-                    const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "3minutes " });
+                    const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "5m" });
                     await sendMail(email, emailToken);
     const user = await userModel.create({userName,email,password:hashedPassword,phone});
     // Assuming sendMail is a function that sends a verification email
@@ -67,7 +67,7 @@ export const resendVerifyEmail = handleError(async (req, res, next) => {
     if (user.isConfirmed) {
         return next(new AppError("Email already verified", 400));
     }
-    const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "3minutes" });
+    const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "3m" });
     await sendMail(email, emailToken);
     return res.status(200).json({ message: "Verification email resent successfully" });
 });
