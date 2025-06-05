@@ -25,11 +25,7 @@ const userSchema = new mongoose.Schema({
         minlength: 11,
         maxlength: 11,
     },
-    gender: {
-        type: String,
-        enum:["male","female"]
-},
-isconfirmed: {
+isConfirmed: {
         type: Boolean,
         default: false,
     },

@@ -7,7 +7,7 @@ import { AppError } from '../../utils/AppError.js';
 import { sendMail } from '../../emails/sendEmail.js';
 
 export const signUp = handleError(async (req, res,next) => {
-const { userName, email, password, phone,gender} = req.body;
+const { userName, email, password, phone} = req.body;
 
 const existingUser = await userModel.findOne({ email });
 if (existingUser) {
@@ -17,7 +17,7 @@ if (existingUser) {
         const hashedPassword = await bcrypt.hashSync (password, saltRounds);
                     const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "1d" });
                     await sendMail(email, emailToken);
-    const user = await userModel.create({userName,email,password:hashedPassword,phone,gender,});
+    const user = await userModel.create({userName,email,password:hashedPassword,phone});
     // Assuming sendMail is a function that sends a verification email
     user? res.status(200).json({message: "User created successfully", user}): res.status(400).json({message: "Error creating user"})
     
@@ -26,10 +26,13 @@ if (existingUser) {
 
 export const LogIn = handleError(async (req,res,next)=>{
     const {email,password} = req.body;
-
+    
     const User= await userModel.findOne({email})
     if(!User){
             return next(new AppError("User Not Exist",400));
+    }
+    if (!User.isConfirmed) {
+        return next(new AppError("Please verify your email first", 401));
     }
     const MatchPassword= bcrypt.compareSync(password,User.password)
     if(!MatchPassword){
@@ -50,7 +53,7 @@ export const VerifyEmail = handleError(async (req, res, next) => {
     if (!user) {
         return next(new AppError("User not found", 404));
     }
-    user.isconfirmed = true;
+    user.isConfirmed = true;
     await user.save();
     res.status(200).json({ message: "Email verified successfully" });
 });
@@ -115,11 +118,55 @@ export const Updated = handleError(async (req,res,next)=>{
 
 
 export const Deleted = handleError(async (req, res,next) => {
-    const user = await userModel.findById(req.user._id)
+        if (req.user.role !== 'SuperAdmin' ) {
+        return next(new AppError("Access Denied", 403));
+    }
+    else{
+            const user = await userModel.findById(req.user._id)
     if (!user) {
                 return next(new AppError("User not found",400));
     }
     await userModel.findByIdAndDelete(req.user._id); // حذف المستخدم فعليًا
     return res.status(200).json({ message: "User Deleted" });
+    }
+    
 })
 
+
+export const GitAllUsers = handleError(async (req, res, next) => {
+    if (req.user.role !== 'Admin' && req.user.role !== 'SuperAdmin') {
+        return next(new AppError("Access Denied", 403));
+    }
+    const users = await userModel.find({ role: 'User' });
+    return res.status(200).json({ message: "All Users", users });
+});
+
+export const GitAllAdmins = handleError(async (req, res, next) => {
+    if (req.user.role !== 'SuperAdmin' ) {
+        return next(new AppError("Access Denied", 403));
+    }
+    const users = await userModel.find({ role: 'Admin' });
+    return res.status(200).json({ message: "All Admin", users });
+});
+
+
+export const UpdatedRole = handleError(async (req, res, next) => {
+    const {_id,role } = req.body;
+    if (req.user.role !== 'SuperAdmin') {
+        return next(new AppError("Access Denied", 403));
+    }
+    const user = await userModel.findById(_id);
+    if (!user) {
+        return next(new AppError("User not found", 404));
+    }
+    if (role) {
+        if (role !== 'Admin' && role !== 'User') {
+            return next(new AppError("Invalid role", 400));
+        }
+        user.role = role;
+    }
+    const updatedUser = await user.save();
+    return res.status(200).json({ message: 'Role updated successfully', user: updatedUser });
+
+
+})

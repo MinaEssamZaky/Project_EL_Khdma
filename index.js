@@ -10,7 +10,7 @@ const app = express()
 app.use(express.json())
 
 //userRouter
-app.use("/Api/V1/user",userRouter)
+app.use("/api/v1/user",userRouter)
 
 
 DataBaseConnection()

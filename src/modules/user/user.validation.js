@@ -21,14 +21,21 @@ const ChangePasswordSchemaVal = Joi.object({
 
 
 const UpdateSchemaVal = Joi.object({
-    userName: Joi.string().min(2).max(20).required(),
-    email: Joi.string().email({ tlds: { allow: ["com"] } }).required(),
-    phone: Joi.string().length(11).required(),
+    userName: Joi.string().min(2).max(20),
+    email: Joi.string().email({ tlds: { allow: ["com"] } }),
+    phone: Joi.string().length(11),
 })
+
+const UpdatedRoleSchemaVal = Joi.object({
+
+    role: Joi.string().valid( "Admin", "User").required(),
+})
+
 
 export {
     signUpSchemaVal,
     LogInSchemaVal,
     UpdateSchemaVal,
-    ChangePasswordSchemaVal
+    ChangePasswordSchemaVal,
+    UpdatedRoleSchemaVal
 }
