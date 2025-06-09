@@ -1,16 +1,20 @@
 import { DataBaseConnection}  from './DataBase/DbConnection.js'
 import dotenv from 'dotenv'
 import express  from 'express'
+import cors from 'cors'
 import userRouter from './src/modules/user/user.routes.js'
 import { AppError } from './src/utils/AppError.js'
 import { GlobalErrorHandler } from './src/middleware/HandleError.js';
+import { servedRouter } from './src/modules/served/served.routes.js'
 
 dotenv.config()
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 //userRouter
 app.use("/api/v1/user",userRouter)
+app.use("/api/v1/served",servedRouter)
 
 
 DataBaseConnection()
