@@ -2,9 +2,19 @@ import express from "express";
 import { AppError } from "../../utils/AppError.js";
 import servedModel from "../../../DataBase/models/servedInformation.model.js";
 import { handleError } from "../../middleware/HandleError.js";
+import userModel from "../../../DataBase/models/user.model.js";
 
 
 export const addServed = handleError(async (req, res, next) => {
+        if (req.user.role !== 'Admin') {
+        return next(new AppError("Access Denied", 403));
+    }
+            const user = await userModel.findById(req.user._id)
+                if(!user){
+                return next(new AppError("User not found",404));
+                }
+
+    
     const {
         firstName,
         secondName,
@@ -26,15 +36,10 @@ export const addServed = handleError(async (req, res, next) => {
         Profession
     } = req.body;
 
-    if (req.user.role !== 'Admin') {
-        return next(new AppError("Access Denied", 403));
-    }
-
-    // تجميع الاسم الثلاثي
-    const fullName = `${firstName} ${secondName} ${familyName}`;
-
-    const addServed = await servedModel.create({
-        fullName, // فقط الاسم الثلاثي
+    const fullNameArray = [firstName, secondName, familyName];
+    const fullName = fullNameArray.join(' ');
+    const newServed = await servedModel.create({
+        fullName, 
         Birthdate,
         email,
         address,
@@ -49,8 +54,9 @@ export const addServed = handleError(async (req, res, next) => {
         governorateOfBirth,
         maritalStatus,
         Cohort,
-        Profession
+        Profession,
+        creatorId: req.user._id
     });
 
-    res.status(201).json({ message: "Done", addServed });
+    res.status(201).json({ message: "Successfully", served: newServed });
 });

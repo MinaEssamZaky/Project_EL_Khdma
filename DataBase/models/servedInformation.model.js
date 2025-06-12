@@ -1,20 +1,8 @@
 import mongoose from "mongoose";
 
 const servedSchema =new mongoose.Schema({
-    firstName: {
+        fullName: {
         type: String,
-        required: true,
-        
-    },
-
-        secondName: {
-        type: String,
-        required: true,
-        
-    },
-        familyName: {
-        type: String,
-        required: true,
         
     },
 
@@ -50,9 +38,6 @@ const servedSchema =new mongoose.Schema({
             
     mobileNumber2: {
         type: String,
-        unique: true,
-        minlength: 11,
-        maxlength: 11,
     },
 
     IsExpatriate:{
@@ -61,9 +46,6 @@ const servedSchema =new mongoose.Schema({
     },
     Landline :{
         type: String,
-        unique: true,
-        minlength: 9,
-        maxlength: 9,
     },
 
     Church: {
@@ -99,7 +81,6 @@ const servedSchema =new mongoose.Schema({
 
     Profession:{
         type: String,
-        required: true,
     },
 
         creatorId:{
