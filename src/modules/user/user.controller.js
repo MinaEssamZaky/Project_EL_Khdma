@@ -39,7 +39,7 @@ export const LogIn = handleError(async (req,res,next)=>{
                     return next(new AppError("Wrong Password",400));
     }
     const token =jwt.sign({id:User._id,email:User.email},process.env.TOKEN,{expiresIn:"24h"})
-    res.status(200).json({message:"Done",token})
+    res.status(200).json({message:"Done",token,role:User.role})
 }
 )
 
@@ -166,11 +166,15 @@ export const GitAllAdmins = handleError(async (req, res, next) => {
 
 
 export const UpdatedRole = handleError(async (req, res, next) => {
-    const {_id,role } = req.body;
+    const { id } = req.params;
+    if (!id) {
+        return next(new AppError("User ID is required", 400));
+    }
+    const {role } = req.body;
     if (req.user.role !== 'SuperAdmin') {
         return next(new AppError("Access Denied", 403));
     }
-    const user = await userModel.findById(_id);
+    const user = await userModel.findById(id);
     if (!user) {
         return next(new AppError("User not found", 404));
     }

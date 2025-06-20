@@ -17,45 +17,54 @@ export const addServed = handleError(async (req, res, next) => {
     
     const {
         firstName,
-        secondName,
+        secName,
         familyName,
-        Birthdate,
+        birthDay,
+        birthMonth,
+        birthYear,
         email,
-        address,
-        address2,
+        Address,
+        Address2,
         mobileNumber1,
         mobileNumber2,
-        IsExpatriate,
-        Landline,
-        Church,
+        isExpatriate,
+        landline,
+        church,
         priestName,
-        collegeOrInstitute,
+        college,
         governorateOfBirth,
         maritalStatus,
-        Cohort,
-        Profession
+        cohort,
+        Profession,
+        dayOff
     } = req.body;
 
-    const fullNameArray = [firstName, secondName, familyName];
+
+    const fullNameArray = [firstName, secName, familyName];
     const fullName = fullNameArray.join(' ');
     const newServed = await servedModel.create({
-        fullName, 
-        Birthdate,
+        fullName,
+        birthDay,
+        birthMonth,
+        birthYear,
         email,
-        address,
-        address2,
+        Address,
+        Address2,
         mobileNumber1,
         mobileNumber2,
-        IsExpatriate,
-        Landline,
-        Church,
+        isExpatriate,
+        landline,
+        church,
         priestName,
-        collegeOrInstitute,
+        college,
         governorateOfBirth,
         maritalStatus,
-        Cohort,
+        cohort,
         Profession,
-        creatorId: req.user._id
+        creatorId: req.user._id,
+        dayOff,
+
+
     });
 
     res.status(201).json({ message: "Successfully", served: newServed });

@@ -1,11 +1,13 @@
 import Joi from "joi";
 
 export const addServedValidation = Joi.object({
-    firstName:Joi.string().min(2).max(10),
-    secondName:Joi.string().min(2).max(10),
-    familyName:Joi.string().min(2).max(10),
+    firstName:Joi.string().min(2).max(10).required(),
+    secName:Joi.string().min(2).max(10).required(),
+    familyName:Joi.string().min(2).max(10).required(),
     fullName: Joi.string().min(2).max(20),
-    Birthdate: Joi.date().required(),
+    birthDay: Joi.number().integer().min(1).max(31).required(),
+    birthMonth: Joi.number().integer().min(1).max(12).required(),
+    birthYear: Joi.number().integer().min(1900).max(new Date().getFullYear()).required(),
     email: Joi.string().email({ tlds: { allow: ["com"] } }).required(),
     address: Joi.string().min(5).max(50).required(),
     address2: Joi.string().min(5).max(50).allow('', null), // Allow empty or null
@@ -13,11 +15,12 @@ export const addServedValidation = Joi.object({
     mobileNumber2: Joi.string().length(11).empty('').allow(null).pattern(/^[0-9]*$/).optional(), // Allow empty or null
     IsExpatriate: Joi.boolean(),
     Landline: Joi.string().length(9).empty('').allow(null).pattern(/^[0-9]*$/).optional(),
-    Church: Joi.string().min(2).max(50).required(),
+    church: Joi.string().min(2).max(50).required(),
     priestName: Joi.string().min(2).max(50),
-    collegeOrInstitute: Joi.string().min(2).max(50),
+    college: Joi.string().min(2).max(50),
     governorateOfBirth: Joi.string().min(2).max(50),
     maritalStatus: Joi.string().valid("Single", "Married", "Engaged").required(),
-    Cohort: Joi.string().min(2).max(50),
+    cohort: Joi.string().min(2).max(50),
     Profession: Joi.string().min(2).max(50).allow('', null),
+    dayOff: Joi.string().valid("Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday")
 });

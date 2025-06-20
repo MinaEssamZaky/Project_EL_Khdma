@@ -6,23 +6,34 @@ const servedSchema =new mongoose.Schema({
         
     },
 
-    Birthdate:{
+    birthDay :{
         type: Date,
         required: true,
     },
+
+        birthMonth:{
+        type: Date,
+        required: true,
+    },
+
+        birthYear:{
+        type: Date,
+        required: true,
+    },
+
 
         email: {
         type: String,
         required: true,
         unique: true,
     },
-        address: {
+        Address: {
         type: String,
         required: true,
 
     },
 
-        address2: {
+        Address2: {
         type: String,
     },
 
@@ -48,7 +59,7 @@ const servedSchema =new mongoose.Schema({
         type: String,
     },
 
-    Church: {
+    church: {
         type: String,
         required: true,
     },
@@ -58,7 +69,7 @@ const servedSchema =new mongoose.Schema({
         required: true,
     },
 
-    collegeOrInstitute:{
+    college:{
         type: String,
         required: true,
     },
@@ -74,7 +85,7 @@ const servedSchema =new mongoose.Schema({
         required: true,
     },
 
-    Cohort:{
+    cohort:{
         type: String,
         required: true,
     },
@@ -87,6 +98,11 @@ const servedSchema =new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref:"user",
             required:true
+        },
+
+        dayOff: {
+            type: String,
+            enum: ["Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
         }
     
 

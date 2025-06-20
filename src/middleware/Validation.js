@@ -3,7 +3,7 @@ import { AppError } from "../utils/AppError.js"
 
 export const validation = (schema) => {
     return (req, res, next) => {
-        const { error } = schema.validate({...req.params,...req.body,...req.query}, { abortEarly: false })
+        const { error } = schema.validate(req.body, { abortEarly: false })
         if (!error) {
             next()
         } else {

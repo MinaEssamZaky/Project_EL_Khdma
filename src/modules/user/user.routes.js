@@ -11,7 +11,7 @@ userRouter.put("/changePassword",validation(ChangePasswordSchemaVal),auth(),chan
 userRouter.get("/verifyEmail", VerifyEmail)
 userRouter.post("/resendVerifyEmail",resendVerifyEmail)
 userRouter.put("/update",validation(UpdateSchemaVal),auth(),Updated)
-userRouter.put("/updatedRole",validation(UpdatedRoleSchemaVal),auth(),authorizeRoles("SuperAdmin"),UpdatedRole)
+userRouter.put("/updatedRole/:id",validation(UpdatedRoleSchemaVal),auth(),authorizeRoles("SuperAdmin"),UpdatedRole)
 userRouter.delete("/delete",auth(),authorizeRoles("SuperAdmin"),Deleted)
 userRouter.get("/gitAllUsers",auth(),authorizeRoles("SuperAdmin","Admin"),GitAllUsers)
 userRouter.get("/gitAllAdmins",auth(),authorizeRoles("SuperAdmin"),GitAllAdmins)
