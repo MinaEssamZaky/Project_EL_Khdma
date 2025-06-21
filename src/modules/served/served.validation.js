@@ -22,5 +22,5 @@ export const addServedValidation = Joi.object({
     maritalStatus: Joi.string().valid("Single", "Married", "Engaged").required(),
     cohort: Joi.string().min(2).max(50),
     Profession: Joi.string().min(2).max(50).allow('', null),
-    dayOff: Joi.string().valid("Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday")
+    dayOff: Joi.string().valid("Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday").allow(null).empty('').optional()
 });
