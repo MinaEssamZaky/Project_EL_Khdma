@@ -9,8 +9,8 @@ export const addServedValidation = Joi.object({
     birthMonth: Joi.number().integer().min(1).max(12).required(),
     birthYear: Joi.number().integer().min(1900).max(new Date().getFullYear()).required(),
     email: Joi.string().email({ tlds: { allow: ["com"] } }).required(),
-    address: Joi.string().min(5).max(50).required(),
-    address2: Joi.string().min(5).max(50).allow('', null), // Allow empty or null
+    Address: Joi.string().min(5).max(50).required(),
+    Address2: Joi.string().min(5).max(50).allow('', null), // Allow empty or null
     mobileNumber1: Joi.string().length(11).required().pattern(/^[0-9]+$/),
     mobileNumber2: Joi.string().length(11).empty('').allow(null).pattern(/^[0-9]*$/).optional(), // Allow empty or null
     IsExpatriate: Joi.boolean(),
