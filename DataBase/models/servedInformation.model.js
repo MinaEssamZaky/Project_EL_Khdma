@@ -51,11 +51,11 @@ const servedSchema =new mongoose.Schema({
         type: String,
     },
 
-    IsExpatriate:{
+    isExpatriate:{
         type: Boolean,
         default: false,
     },
-    Landline :{
+    landline :{
         type: String,
     },
 
@@ -90,7 +90,7 @@ const servedSchema =new mongoose.Schema({
         required: true,
     },
 
-    Profession:{
+    profession:{
         type: String,
     },
 
