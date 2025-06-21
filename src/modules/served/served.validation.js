@@ -13,14 +13,14 @@ export const addServedValidation = Joi.object({
     Address2: Joi.string().min(5).max(50).allow('', null), // Allow empty or null
     mobileNumber1: Joi.string().length(11).required().pattern(/^[0-9]+$/),
     mobileNumber2: Joi.string().length(11).empty('').allow(null).pattern(/^[0-9]*$/).optional(), // Allow empty or null
-    IsExpatriate: Joi.boolean(),
-    Landline: Joi.string().length(9).empty('').allow(null).pattern(/^[0-9]*$/).optional(),
+    isExpatriate: Joi.boolean(),
+    landline: Joi.string().length(9).empty('').allow(null).pattern(/^[0-9]*$/).optional(),
     church: Joi.string().min(2).max(50).required(),
     priestName: Joi.string().min(2).max(50),
     college: Joi.string().min(2).max(50),
     governorateOfBirth: Joi.string().min(2).max(50),
     maritalStatus: Joi.string().valid("Single", "Married", "Engaged").required(),
     cohort: Joi.string().min(2).max(50),
-    Profession: Joi.string().min(2).max(50).allow('', null),
-    dayOff: Joi.string().valid("Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday").allow(null).empty('').optional()
+    profession: Joi.string().min(2).max(50).allow('', null),
+    dayOff: Joi.string().valid("Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday").empty('').allow(null).optional()
 });
