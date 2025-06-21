@@ -35,7 +35,7 @@ export const addServed = handleError(async (req, res, next) => {
         governorateOfBirth,
         maritalStatus,
         cohort,
-        Profession,
+        profession,
         dayOff
     } = req.body;
 
@@ -60,7 +60,7 @@ export const addServed = handleError(async (req, res, next) => {
         governorateOfBirth,
         maritalStatus,
         cohort,
-        Profession,
+        profession,
         creatorId: req.user._id,
         dayOff,
 
