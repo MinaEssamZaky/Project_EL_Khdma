@@ -7,17 +7,17 @@ const servedSchema =new mongoose.Schema({
     },
 
     birthDay :{
-        type: Date,
+        type: Number,
         required: true,
     },
 
         birthMonth:{
-        type: Date,
+        type: Number,
         required: true,
     },
 
         birthYear:{
-        type: Date,
+        type: Number,
         required: true,
     },
 
