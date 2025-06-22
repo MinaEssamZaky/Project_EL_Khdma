@@ -100,10 +100,11 @@ const servedSchema =new mongoose.Schema({
             required:true
         },
 
-        dayOff: {
-            type: String,
-            enum: ["Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
-        }
+        dayOff: [{
+          type: String,
+          enum: ["Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"]
+        }]
+
     
 
 },{timestamps:true});
