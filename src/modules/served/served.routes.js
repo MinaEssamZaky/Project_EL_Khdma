@@ -8,4 +8,5 @@ import { addServedValidation  } from "./served.validation.js";
 export const servedRouter = express.Router();
 
 servedRouter.post("/addServed", validation(addServedValidation),auth(),authorizeRoles("Admin"), addServed)
-servedRouter.git("/getAllServeds ",auth(),authorizeRoles("Admin,SuperAdmin"), getAllServeds )
+servedRouter.get("/getAllServeds", auth(), authorizeRoles("Admin", "SuperAdmin"), getAllServeds);
+
