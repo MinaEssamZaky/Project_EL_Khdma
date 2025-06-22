@@ -131,20 +131,21 @@ export const Updated = handleError(async (req,res,next)=>{
 })
 
 
-export const Deleted = handleError(async (req, res,next) => {
-        if (req.user.role !== 'SuperAdmin' ) {
-        return next(new AppError("Access Denied", 403));
-    }
-    else{
-            const user = await userModel.findById(req.user._id)
-    if (!user) {
-                return next(new AppError("User not found",400));
-    }
-    await userModel.findByIdAndDelete(req.user._id); // حذف المستخدم فعليًا
-    return res.status(200).json({ message: "User Deleted" });
-    }
-    
-})
+export const deleteUserById = handleError(async (req, res, next) => {
+  if (req.user.role !== 'SuperAdmin') {
+    return next(new AppError("Access Denied", 403));
+  }
+
+  const targetUserId = req.params.id;
+  const user = await userModel.findById(targetUserId);
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+
+  await userModel.findByIdAndDelete(targetUserId);
+  return res.status(200).json({ message: "User Deleted Successfully" });
+});
+
 
 
 export const GitAllUsers = handleError(async (req, res, next) => {
