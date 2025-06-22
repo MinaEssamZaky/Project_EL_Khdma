@@ -6,7 +6,7 @@ import userModel from "../../../DataBase/models/user.model.js";
 
 
 export const addServed = handleError(async (req, res, next) => {
-        if (req.user.role !== 'Admin') {
+         if (req.user.role !== 'Admin' && req.user.role !== 'SuperAdmin' ) {
         return next(new AppError("Access Denied", 403));
     }
             const user = await userModel.findById(req.user._id)
@@ -91,9 +91,9 @@ export const getAllServeds = handleError(async (req, res, next) => {
 
 
 export const updateServed = handleError(async (req, res, next) => {
-  if (!['Admin', 'SuperAdmin'].includes(req.user.role)) {
-    return next(new AppError("Access Denied", 403));
-  }
+  if (req.user.role !== 'Admin' && req.user.role !== 'SuperAdmin' ) {
+        return next(new AppError("Access Denied", 403));
+    }
 
   const servedId = req.params.id;
   const served = await servedModel.findById(servedId);
@@ -179,9 +179,9 @@ export const updateServed = handleError(async (req, res, next) => {
 });
 
 export const deleteServed = handleError(async (req, res, next) => {
-  if (!['Admin', 'SuperAdmin'].includes(req.user.role)) {
-    return next(new AppError("Access Denied", 403));
-  }
+  if (req.user.role !== 'Admin' && req.user.role !== 'SuperAdmin' ) {
+        return next(new AppError("Access Denied", 403));
+    }
 
   const servedId = req.params.id;
   const deleted = await servedModel.findByIdAndDelete(servedId);
