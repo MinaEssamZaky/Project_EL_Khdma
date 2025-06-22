@@ -4,7 +4,6 @@ export const addServedValidation = Joi.object({
     firstName:Joi.string().min(2).max(10).required(),
     secName:Joi.string().min(2).max(10).required(),
     familyName:Joi.string().min(2).max(10).required(),
-    fullName: Joi.string().min(2).max(20),
     birthDay: Joi.number().integer().min(1).max(31).required(),
     birthMonth: Joi.number().integer().min(1).max(12).required(),
     birthYear: Joi.number().integer().min(1900).max(new Date().getFullYear()).required(),
