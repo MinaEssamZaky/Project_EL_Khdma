@@ -177,3 +177,19 @@ export const updateServed = handleError(async (req, res, next) => {
 
   return res.status(200).json({ message: 'Updated Successfully', served: updatedServed });
 });
+
+export const deleteServed = handleError(async (req, res, next) => {
+  if (!['Admin', 'SuperAdmin'].includes(req.user.role)) {
+    return next(new AppError("Access Denied", 403));
+  }
+
+  const servedId = req.params.id;
+  const deleted = await servedModel.findByIdAndDelete(servedId);
+
+  if (!deleted) {
+    return next(new AppError("Served not found", 404));
+  }
+
+  return res.status(200).json({ message: "Served Deleted Successfully" });
+});
+
