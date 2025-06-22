@@ -14,7 +14,8 @@ app.use(express.json())
 app.use(cors({
   origin: 'https://ugmfamiy.vercel.app', 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials:true
 }));
 
 //userRouter
