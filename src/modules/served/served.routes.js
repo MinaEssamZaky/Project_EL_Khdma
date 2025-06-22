@@ -7,7 +7,7 @@ import { addServedValidation ,updateServedValidation  } from "./served.validatio
 
 export const servedRouter = express.Router();
 
-servedRouter.post("/addServed", validation(addServedValidation),auth(),authorizeRoles("Admin"), addServed)
+servedRouter.post("/addServed", validation(addServedValidation),auth(),authorizeRoles("Admin", "SuperAdmin"), addServed)
 servedRouter.get("/getAllServeds", auth(), authorizeRoles("Admin", "SuperAdmin"), getAllServeds);
 servedRouter.put('/updateServed/:id',  validation(updateServedValidation),auth(), authorizeRoles("Admin", "SuperAdmin"), updateServed);
 servedRouter.delete("/deleteServed/:id", auth(), authorizeRoles("Admin", "SuperAdmin"), deleteServed);
