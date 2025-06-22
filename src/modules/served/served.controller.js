@@ -69,3 +69,21 @@ export const addServed = handleError(async (req, res, next) => {
 
     res.status(201).json({ message: "Successfully", served: newServed });
 });
+
+
+export const getAllServeds = handleError(async (req, res, next) => {
+
+          if (req.user.role !== 'Admin' && req.user.role !== 'SuperAdmin' ) {
+        return next(new AppError("Access Denied", 403));
+    }
+            const user = await userModel.findById(req.user._id)
+                if(!user){
+                return next(new AppError("User not found",404));
+                }
+        
+        const getAll = await servedModel.find().populate({
+  path: "creatorId",
+  select: "userName -_id" // حدد الحقول اللي عايزها من المستخدم
+});
+        res.status(201).json({ message: "Successfully", served: getAll });
+})
