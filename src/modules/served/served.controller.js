@@ -40,10 +40,11 @@ export const addServed = handleError(async (req, res, next) => {
     } = req.body;
 
 
-    const fullNameArray = [firstName, secName, familyName];
-    const fullName = fullNameArray.join(' ');
+    
     const newServed = await servedModel.create({
-        fullName,
+        firstName,
+        secName,
+        familyName,
         birthDay,
         birthMonth,
         birthYear,
@@ -170,9 +171,7 @@ export const updateServed = handleError(async (req, res, next) => {
   if (profession) served.profession = profession;
   if (dayOff) served.dayOff = dayOff;
 
-  // تحديث الاسم الكامل
-  const fullNameArray = [served.firstName, served.secName, served.familyName];
-  served.fullName = fullNameArray.join(" ");
+
 
   const updatedServed = await served.save();
 
