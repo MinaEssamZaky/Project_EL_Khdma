@@ -1,12 +1,20 @@
 import mongoose from "mongoose";
 
 const servedSchema =new mongoose.Schema({
-        fullName: {
+        firstName : {
         type: String,
-        
+        required: true
     },
-
-    birthDay :{
+        secName : {
+        type: String,
+        required: true
+    },
+        familyName : {
+        type: String,
+        required: true
+    },
+        
+        birthDay :{
         type: Number,
         required: true,
     },
