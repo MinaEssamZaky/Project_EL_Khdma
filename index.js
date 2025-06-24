@@ -22,6 +22,9 @@ app.use(cors({
 app.use("/api/v1/user",userRouter)
 app.use("/api/v1/served",servedRouter)
 
+app.get("/", (req, res) => {
+  res.send("API is running successfully 🎉");
+});
 
 DataBaseConnection()
 
