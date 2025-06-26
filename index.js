@@ -10,6 +10,7 @@ import { servedRouter } from './src/modules/served/served.routes.js'
 dotenv.config()
 const app = express()
 app.use(express.json())
+DataBaseConnection()
 
 app.use(cors({
   origin: ['http://localhost:3000','https://ugm-family.vercel.app'], 
@@ -26,7 +27,7 @@ app.get("/", (req, res) => {
   res.send("API is running successfully 🎉");
 });
 
-DataBaseConnection()
+
 
 const port = process.env.PORT 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
