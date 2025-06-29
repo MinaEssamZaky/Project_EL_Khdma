@@ -7,7 +7,7 @@ import { addMessageValidation } from "./contact.validation.js";
 
 export const contactRouter = express.Router();
 
-contactRouter.post("/addMessage", validation(addMessageValidation),auth(),authorizeRoles("SuperAdmin"),addMessage)
+contactRouter.post("/addMessage",addMessage)
 contactRouter.get("/getAllMessage", auth(), authorizeRoles("SuperAdmin"), getAllMessage);
 contactRouter.delete("/deleteMessage/:id", auth(), authorizeRoles("SuperAdmin"), deleteMessage);
 
