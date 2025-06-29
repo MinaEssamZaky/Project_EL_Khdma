@@ -1,44 +1,51 @@
-import { DataBaseConnection}  from './DataBase/DbConnection.js'
+import { DataBaseConnection } from './DataBase/DbConnection.js'
 import dotenv from 'dotenv'
-import express  from 'express'
+import express from 'express'
 import cors from 'cors'
 import userRouter from './src/modules/user/user.routes.js'
 import { AppError } from './src/utils/AppError.js'
-import { GlobalErrorHandler } from './src/middleware/HandleError.js';
+import { GlobalErrorHandler } from './src/middleware/HandleError.js'
 import { servedRouter } from './src/modules/served/served.routes.js'
 
 dotenv.config()
 const app = express()
 app.use(express.json())
-DataBaseConnection()
 
 app.use(cors({
-  origin: ['http://localhost:3000','https://ugm-family.vercel.app'], 
+  origin: ['http://localhost:3000', 'https://ugm-family.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 
-//userRouter
-app.use("/api/v1/user",userRouter)
-app.use("/api/v1/served",servedRouter)
+// Routes
+app.use("/api/v1/user", userRouter)
+app.use("/api/v1/served", servedRouter)
 
 app.get("/", (req, res) => {
   res.send("API is running successfully 🎉");
 });
 
-
-
-const port = process.env.PORT 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-
-
-// ------------------------------------------------------------------------------------------
 // Handle undefined routes
 app.use((req, res, next) => {
-    const err = new AppError(`Can't find ${req.originalUrl} on this server`, 404);
-    next(err);
+  const err = new AppError(`Can't find ${req.originalUrl} on this server`, 404);
+  next(err);
 });
-
 app.use(GlobalErrorHandler);
 
+// ✅ Start the server after DB connection
+const port = process.env.PORT || 3000;
+
+const startServer = async () => {
+  try {
+    await DataBaseConnection(); // الاتصال بقاعدة البيانات أولًا
+    app.listen(port, () => {
+      console.log(`🚀 Server is running on ${port}`);
+    });
+  } catch (err) {
+    console.error("❌ Failed to start the server due to DB error:", err);
+    process.exit(1); // خروج آمن لو فشل الاتصال
+  }
+};
+
+startServer();
