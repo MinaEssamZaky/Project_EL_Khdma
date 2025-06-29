@@ -33,8 +33,8 @@ export const deleteMessage = handleError(async (req, res, next) => {
   const deleted = await contactModel.findByIdAndDelete(messageId);
 
   if (!deleted) {
-    return next(new AppError("Served not found", 404));
+    return next(new AppError("Contact not found", 404));
   }
 
-  return res.status(200).json({ message: "Message Deleted Successfully" });
+  return res.status(200).json({ message: "Contact Deleted Successfully" });
 });
