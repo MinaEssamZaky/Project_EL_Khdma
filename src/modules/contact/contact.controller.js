@@ -24,3 +24,16 @@ export const getAllMessage = handleError(async (req, res, next) => {
         const getAllMessage = await contactModel.find();
         res.status(201).json({ message: "Successfully", getAllMessage });
 })
+
+export const deleteMessage = handleError(async (req, res, next) => {
+  if ( req.user.role !== 'SuperAdmin' ) {return next(new AppError("Access Denied", 403));}
+  
+  const messageId = req.params.id;
+  const deleted = await contactModel.findByIdAndDelete(messageId);
+
+  if (!deleted) {
+    return next(new AppError("Served not found", 404));
+  }
+
+  return res.status(200).json({ message: "Message Deleted Successfully" });
+});
