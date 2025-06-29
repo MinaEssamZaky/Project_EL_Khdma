@@ -6,6 +6,7 @@ import userRouter from './src/modules/user/user.routes.js'
 import { AppError } from './src/utils/AppError.js'
 import { GlobalErrorHandler } from './src/middleware/HandleError.js'
 import { servedRouter } from './src/modules/served/served.routes.js'
+import { contactRouter } from './src/modules/contact/contact.routes.js'
 
 dotenv.config()
 const app = express()
@@ -21,7 +22,8 @@ app.use(cors({
 // Routes
 app.use("/api/v1/user", userRouter)
 app.use("/api/v1/served", servedRouter)
-
+app.use("/api/v1/contact", contactRouter)
+ 
 app.get("/", (req, res) => {
   res.send("API is running successfully 🎉");
 });
