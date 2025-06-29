@@ -39,7 +39,7 @@ export const LogIn = handleError(async (req,res,next)=>{
                     return next(new AppError("Wrong Password",400));
     }
     const token =jwt.sign({id:User._id,email:User.email},process.env.TOKEN,{expiresIn:"24h"})
-    res.status(200).json({message:"Done",token,role:User.role})
+    res.status(200).json({message:"Done",token,role:User.role,userName:User.userName})
 }
 )
 
