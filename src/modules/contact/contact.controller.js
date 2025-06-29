@@ -2,6 +2,7 @@ import express from "express";
 import { AppError } from "../../utils/AppError.js";
 import contactModel from "../../../DataBase/models/contact.model.js";
 import { handleError } from "../../middleware/HandleError.js";
+import userModel from "../../../DataBase/models/user.model.js";
 
 
 export const addMessage = handleError(async (req, res, next) => {
