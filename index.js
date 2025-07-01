@@ -7,7 +7,7 @@ import { AppError } from './src/utils/AppError.js'
 import { GlobalErrorHandler } from './src/middleware/HandleError.js'
 import { servedRouter } from './src/modules/served/served.routes.js'
 import { contactRouter } from './src/modules/contact/contact.routes.js'
-import { eventsRouter } from './src/modules/events/events.routes.js'
+import  eventsRouter  from './src/modules/events/events.routes.js'
 
 dotenv.config()
 const app = express()
