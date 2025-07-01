@@ -4,7 +4,7 @@ import { createEvent } from "./event.controller.js";
 
 const eventRoute = express.Router();
 
-eventRoute.post("/addEvent", upload.array("images", 5), createEvent);
+eventRoute.post("/addEvent",auth(),authorizeRoles("Admin", "SuperAdmin"), upload.array("images", 5), validation(eventValidation),createEvent);
 
 export default eventRoute;
 
