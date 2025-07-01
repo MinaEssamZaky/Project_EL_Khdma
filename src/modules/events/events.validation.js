@@ -10,5 +10,5 @@ export const eventValidation = Joi.object({
   responsiblePerson: Joi.string().min(3).max(50).required(),
   phone: Joi.string().length(11).pattern(/^[0-9]+$/).required(),
   price: Joi.number().min(0).required(),
-  image:Joi.array().items(Joi.string()).min(2).max(5) // بين 2 إلى 5 عناصر
+  images:Joi.array().items(Joi.string()).min(2).max(5) // بين 2 إلى 5 عناصر
 });
