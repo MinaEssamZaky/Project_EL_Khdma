@@ -1,5 +1,6 @@
 import express from "express";
 import { upload } from "../../../utils/multer.js";
+import { upload } from "../../../utils/fileUpload.js";
 import { createEvent } from "./event.controller.js";
 
 const eventRoute = express.Router();
