@@ -10,7 +10,7 @@ export const createEvent = handleError(async (req, res, next) => {
                 if(!user){return next(new AppError("User not found",404));}
 
   
-  const { eventName, category, date, address, shortDescription, fullDescription, responsiblePerson, phone, price } = req.body;
+  const { eventName, category, date, address, shortDescription, fullDescription, responsiblePerson, phone, price,images } = req.body;
 
   const newEvent = await eventModel.create({
     eventName,
