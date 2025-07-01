@@ -1,5 +1,5 @@
 import express from "express";
-import { createEvent } from "./event.controller.js";
+import { createEvent } from "./events.controller.js";
 import {eventValidation} from "./events.validation.js"
 
 const eventRoute = express.Router();
