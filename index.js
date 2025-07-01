@@ -24,7 +24,7 @@ app.use(cors({
 app.use("/api/v1/user", userRouter)
 app.use("/api/v1/served", servedRouter)
 app.use("/api/v1/contact", contactRouter)
-app.use("/api/v1/events", eventRoute);
+
  
 app.get("/", (req, res) => {
   res.send("API is running successfully 🎉");
