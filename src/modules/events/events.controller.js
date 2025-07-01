@@ -4,7 +4,7 @@ import { AppError } from "../../utils/AppError.js";
 import { handleError } from "../../middleware/HandleError.js";
 
 export const createEvent = handleError(async (req, res, next) => {
-   if (req.user.role !== 'SuperAdmin' ) {return next(new AppError("Access Denied", 403));}
+   if (req.user.role !== 'Admin' && req.user.role !== 'SuperAdmin' ) {return next(new AppError("Access Denied", 403));}
   
             const user = await userModel.findById(req.user._id)
                 if(!user){return next(new AppError("User not found",404));}
