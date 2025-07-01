@@ -1,40 +1,28 @@
-import express from "express";
-import { AppError } from "../../utils/AppError.js";
 import eventModel from "../../../DataBase/models/events.model.js";
+import { AppError } from "../../utils/AppError.js";
 import { handleError } from "../../middleware/HandleError.js";
-import userModel from "../../../DataBase/models/user.model.js";
 
+export const createEvent = handleError(async (req, res, next) => {
+  const { eventName, category, date, address, shortDescription, fullDescription, responsiblePerson, phone, price } = req.body;
 
-export const addEvent = handleError(async (req, res, next) => {
-  
-    const {userName,phone,message} = req.body;
-
-    const newMessage = await eventModel.create({userName,phone,message});
-
-    res.status(201).json({ message: "Successfully", newMessage });
-});
-
-
-export const getAllMessage = handleError(async (req, res, next) => {
-
-          if (req.user.role !== 'SuperAdmin' ) {return next(new AppError("Access Denied", 403));}
-  
-            const user = await userModel.findById(req.user._id)
-                if(!user){return next(new AppError("User not found",404));}
-        
-        const getAllMessage = await contactModel.find();
-        res.status(201).json({ message: "Successfully", getAllMessage });
-})
-
-export const deleteMessage = handleError(async (req, res, next) => {
-  if ( req.user.role !== 'SuperAdmin' ) {return next(new AppError("Access Denied", 403));}
-  
-  const messageId = req.params.id;
-  const deleted = await contactModel.findByIdAndDelete(messageId);
-
-  if (!deleted) {
-    return next(new AppError("Contact not found", 404));
+  if (!req.files || req.files.length === 0) {
+    return next(new AppError("Images are required", 400));
   }
 
-  return res.status(200).json({ message: "Contact Deleted Successfully" });
+  const images = req.files.map(file => file.path); // استخراج روابط الصور من Cloudinary
+
+  const newEvent = await eventModel.create({
+    eventName,
+    category,
+    date,
+    address,
+    shortDescription,
+    fullDescription,
+    responsiblePerson,
+    phone,
+    price,
+    images,
+  });
+
+  res.status(201).json({ message: "Event created successfully", event: newEvent });
 });
