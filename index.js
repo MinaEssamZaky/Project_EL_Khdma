@@ -26,7 +26,7 @@ app.use("/api/v1/served", servedRouter)
 app.use("/api/v1/contact", contactRouter)
 app.use("/api/v1/event", eventRoute)
 
-eventRoute
+
 
  
 app.get("/", (req, res) => {
