@@ -4,9 +4,9 @@ import { validation } from "../../middleware/Validation.js";
 import { createEvent } from "./events.controller.js";
 import {eventValidation} from "./events.validation.js"
 
-const eventsRoute = express.Router();
+const eventsRouter = express.Router();
 
-eventsRoute.post("/addEvent",auth(),authorizeRoles("Admin", "SuperAdmin"),createEvent);
+eventsRouter.post("/addEvent",auth(),authorizeRoles("Admin", "SuperAdmin"),createEvent);
 
-export default eventsRoute;
+export default eventsRouter;
 
