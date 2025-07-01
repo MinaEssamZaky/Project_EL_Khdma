@@ -1,5 +1,5 @@
-const { storage } = require('./cloudinary');
-const multer = require('multer');
+import storage  from'./cloudinary';
+import multer from "multer";
 
 export const upload = multer({ 
   storage: storage,
