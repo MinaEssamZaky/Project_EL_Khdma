@@ -8,6 +8,7 @@ import { GlobalErrorHandler } from './src/middleware/HandleError.js'
 import { servedRouter } from './src/modules/served/served.routes.js'
 import { contactRouter } from './src/modules/contact/contact.routes.js'
 import  eventsRouter  from './src/modules/events/events.routes.js'
+import uploadRouter from './src/modules/memory/memory.routes.js'
 
 dotenv.config()
 const app = express()
@@ -25,10 +26,10 @@ app.use("/api/v1/user", userRouter)
 app.use("/api/v1/served", servedRouter)
 app.use("/api/v1/contact", contactRouter)
 app.use("/api/v1/event", eventsRouter)
+app.use('/api/v1/upload', uploadRouter);
 
 
 
- 
 app.get("/", (req, res) => {
   res.send("API is running successfully 🎉");
 });
