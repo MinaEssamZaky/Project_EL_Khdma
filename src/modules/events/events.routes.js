@@ -9,7 +9,7 @@ const eventsRouter = express.Router();
 eventsRouter.post("/addEvent",auth(),authorizeRoles("Admin", "SuperAdmin"),createEvent);
 eventsRouter.get("/getAllEvents",auth(),getAllEvents);
 eventsRouter.get("/getEventById/:id",auth(),getEventById);
-eventsRouter.post("/deleteEvent/:id",auth(),authorizeRoles("Admin", "SuperAdmin"),deleteEvent);
+eventsRouter.delete("/deleteEvent/:id",auth(),authorizeRoles("Admin", "SuperAdmin"),deleteEvent);
 
 export default eventsRouter;
 
