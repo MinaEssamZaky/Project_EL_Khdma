@@ -1,15 +1,11 @@
 import eventModel from "../../../DataBase/models/events.model.js";
-import userModel from "../../../DataBase/models/user.model.js";
 import { AppError } from "../../utils/AppError.js";
 import { handleError } from "../../middleware/HandleError.js";
 
 export const createEvent = handleError(async (req, res, next) => {
-   if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin" ) {return next(new AppError("Access Denied", 403));}
-  
-            const user = await userModel.findById(req.user._id)
-                if(!user){return next(new AppError("User not found",404));}
-
-  
+   if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
+    return next(new AppError("Access Denied", 403));
+  }
   const { eventName, category, date, address, shortDescription, fullDescription, responsiblePerson, phone, price,images } = req.body;
 
   const newEvent = await eventModel.create({
@@ -28,8 +24,39 @@ export const createEvent = handleError(async (req, res, next) => {
   res.status(201).json({ message: "Event created successfully", event: newEvent });
 });
 
+
 export const getAllEvents =  handleError(async (req, res, next) => {
-const getAll = await eventModel.find()
-   res.status(201).json({ message: "successfully", events: getAll });
+const getAll = await eventModel.find().sort({ date: 1 });
+   res.status(200).json({ message: "success", events: getAll });
    
 })
+
+
+export const getEventById = handleError(async (req, res, next) => {
+  const { id } = req.params;
+
+  const event = await eventModel.findById(id);
+
+  if (!event) {
+    return res.status(404).json({ message: "Event not found" });
+  }
+
+  res.status(200).json({ message: "success", event });
+});
+
+
+export const deleteEvent = handleError(async (req, res, next) => {
+  if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
+    return next(new AppError("Access Denied", 403));
+  }
+   
+   const { id } = req.params;
+
+  const deletedEvent = await eventModel.findByIdAndDelete(id);
+
+  if (!deletedEvent) {
+    return res.status(404).json({ message: "Event not found" });
+  }
+
+  res.status(200).json({ message: "Event deleted successfully" });
+});
