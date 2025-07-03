@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import { uploadImage } from './memory.controller.js'; // تأكد من مسار الملف الصحيح
-import { storage } from '../utils/cloudinary.config.js';
+import { storage } from '../../utils/cloudinary.config.js';
 
 const uploadRouter = express.Router();
 // إعداد multer لرفع الملفات باستخدام Cloudinary
