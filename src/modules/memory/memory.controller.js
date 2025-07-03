@@ -1,16 +1,15 @@
-export const uploadImage = async (req, res) => {
-  try {
-    await const images = req.files.map(file => file.path);
+  import express from "express";
+import { AppError } from "../../utils/AppError.js";
+import { handleError } from "../../middleware/HandleError.js";
 
-    res.status(200).json({
+
+export const uploadImage = handleError(async (req, res, next) => {
+   const images = req.files.map(file => file.path);
+  if(!images){
+    return AppError({"Upload failed",500})
+  }
+      res.status(200).json({
       message: 'Images uploaded successfully',
       imageUrls: images
     });
-
-  } catch (error) {
-    res.status(500).json({
-      message: 'Upload failed',
-      error: error.message
-    });
-  }
-};
+});
