@@ -7,6 +7,6 @@ const uploadRouter = express.Router();
 // إعداد multer لرفع الملفات باستخدام Cloudinary
 const upload = multer({ storage}); // استخدام الذاكرة لتخزين الملفات مؤقتًا
 
-uploadRouter.post('/uploadPhotos', upload.array('images'), uploadImage);
+uploadRouter.post("/uploadPhotos",upload.array("images"),uploadImage);
 
 export default uploadRouter;
