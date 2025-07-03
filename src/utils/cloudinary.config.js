@@ -12,12 +12,12 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: 'UgmMemoryUploads', // الصور هتتخزن داخل هذا الفولدر على Cloudinary
-    allowed_formats: ['jpg', 'png', 'jpeg'], // أنواع الملفات المسموحة
-  
+    folder: 'UgmMemoryUploads', // اسم الفولدر على Cloudinary
+    allowed_formats: ['jpg', 'png', 'jpeg'],
+    public_id: (req, file) => {
+      return `${Date.now()}-${file.originalname}`; // اسم مميز لكل صورة
+    },
   },
 });
 
 export { cloudinary, storage };
-
-
