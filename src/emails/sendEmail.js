@@ -1,22 +1,28 @@
 // npm install nodemailer
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
 import { emailTemplate } from "./emailTemplate.js";
-import { auth } from '../middleware/auth.js';
 
 export const sendMail = async (email, token) => {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: "minaessam856@gmail.com",
-            pass: "myqrasdcklowicsw",
-        }, 
-    });
-    const info = await transporter.sendMail({
-        from: '"Mina Essam" <minaessam856@gmail.com>', // sender address
-        to: email, // list of receivers
-        subject: "Hello ✔", // Subject line 
-        html: emailTemplate(token) // html body
-    });
+    try {
+        // Create transporter
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.SEND_EMAIL || "ugmmeeting@gmail.com",
+                pass: process.env.EMAIL_PASSWORD,
+            }, 
+        });
 
-    console.log("Message sent: %s", info.messageId);
-}
+        // Send mail
+        const info = await transporter.sendMail({
+            from: '"UGM Meeting" <ugmmeeting@gmail.com>', // sender address
+            to: email, // list of receivers
+            subject: "Welcome To The UGM Meeting", // Subject line 
+            html: emailTemplate(token) // html body
+        });
+        return info;
+    } catch (error) {
+        console.error("Error sending email:", error);
+        throw error; // Re-throw the error for handling in the calling function
+    }
+};

@@ -15,7 +15,7 @@ if (existingUser) {
 }else {
     const saltRounds = parseInt(process.env.SALT_ROUNDS)
         const hashedPassword = await bcrypt.hashSync (password, saltRounds);
-                    const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "5m" });
+                    const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "10m" });
                     await sendMail(email, emailToken);
     const user = await userModel.create({userName,email,password:hashedPassword,phone});
     // Assuming sendMail is a function that sends a verification email
