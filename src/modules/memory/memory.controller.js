@@ -1,12 +1,10 @@
-
 export const uploadImage = async (req, res) => {
   try {
-    // Cloudinary بيرجع رابط مباشر للصورة في req.file.path
-    const imageUrl = req.files.path;
+    const images = req.files.map(file => file.path);
 
     res.status(200).json({
-      message: 'Image uploaded successfully',
-      imageUrl
+      message: 'Images uploaded successfully',
+      imageUrls: images
     });
 
   } catch (error) {
