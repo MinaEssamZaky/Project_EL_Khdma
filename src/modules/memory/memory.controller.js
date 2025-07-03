@@ -1,6 +1,6 @@
 export const uploadImage = async (req, res) => {
   try {
-    const images = req.files.map(file => file.path);
+    await const images = req.files.map(file => file.path);
 
     res.status(200).json({
       message: 'Images uploaded successfully',
