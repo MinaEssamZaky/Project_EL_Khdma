@@ -6,6 +6,8 @@ dotenv.config();
 
 export const sendMail = async (email, token) => {
     try {
+        console.log('→ SEND EMAIL ENV:', process.env.EMAIL);
+         console.log('→ PASSWORD ENV:', process.env.PASSWORD);
         // Create transporter
         const transporter = nodemailer.createTransport({
             service: "gmail",
