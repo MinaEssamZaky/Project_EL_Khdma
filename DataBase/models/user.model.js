@@ -11,7 +11,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        localStorage: true,
     },
     password: {
         type: String,
@@ -33,6 +32,10 @@ isConfirmed: {
         type: String,
         enum: ["SuperAdmin","Admin", "User"],
         default: "User"
+    },
+    wallet:{
+         type: Number,
+         default: "0"
     }
 
 },
