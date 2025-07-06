@@ -152,16 +152,12 @@ export const deleteUserById = handleError(async (req, res, next) => {
 
 
 export const GitAllUsers = handleError(async (req, res, next) => {
-    // if (req.user.role !== 'Admin' && req.user.role !== 'SuperAdmin') {
-    //     return next(new AppError("Access Denied", 403));
-    // }
-    // const users = await userModel.find({ role: 'User' });
-    // return res.status(200).json({ message: "All Users", users });
+    if (req.user.role !== 'Admin' && req.user.role !== 'SuperAdmin') {
+        return next(new AppError("Access Denied", 403));
+    }
+    const users = await userModel.find({ role: 'User' });
+    return res.status(200).json({ message: "All Users", users });
 
-   res.status(200).json({
-    EMAIL: process.env.EMAIL,
-    PASSWORD: process.env.PASSWORD
-  });
 });
 
 
