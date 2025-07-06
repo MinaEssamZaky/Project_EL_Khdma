@@ -14,7 +14,7 @@ if (existingUser) {
     return next(new AppError("Email already exists",400));
 }else {
     const saltRounds = parseInt(process.env.SALT_ROUNDS)
-        const hashedPassword = await bcrypt.hashSync (password, saltRounds);
+        const hashedPassword =bcrypt.hashSync (password, saltRounds);
                     const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "10m" });
                     await sendMail(email, emailToken);
     const user = await userModel.create({userName,email,password:hashedPassword,phone});
@@ -24,8 +24,7 @@ if (existingUser) {
  
 }
 
-    
-}})
+})
 
 
 export const LogIn = handleError(async (req,res,next)=>{
