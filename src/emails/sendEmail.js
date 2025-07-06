@@ -4,7 +4,6 @@ import { emailTemplate } from "./emailTemplate.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-
 export const sendMail = async (email, token) => {
     try {
         // Create transporter
@@ -16,9 +15,6 @@ export const sendMail = async (email, token) => {
             }, 
         });
 
-        
-
-
         // Send mail
         const info = await transporter.sendMail({
             from: '"UGM Meeting" <ugmmeeting@gmail.com>', // sender address
@@ -26,6 +22,7 @@ export const sendMail = async (email, token) => {
             subject: "Welcome To The UGM Meeting", // Subject line 
             html: emailTemplate(token) // html body
         });
+
         return info;
     } catch (error) {
         console.error("Error sending email:", error);
