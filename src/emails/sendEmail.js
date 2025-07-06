@@ -7,22 +7,16 @@ dotenv.config();
 
 export const sendMail = async (email, token) => {
     try {
-        // Create transporter
-        // const transporter = nodemailer.createTransport({
-        //     service: "gmail",
-        //     auth: {
-        //         user: process.env.SEND_EMAIL || "ugmmeeting@gmail.com",
-        //         pass: process.env.EMAIL_PASSWORD
-        //     }, 
-        // });
-
+        Create transporter
         const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "ugmmeeting@gmail.com",
-    pass: "zeswnfgzblbgvyvx", // مؤقتًا للتجربة فقط
-  },
-});
+            service: "gmail",
+            auth: {
+                user: process.env.SEND_EMAIL,
+                pass: process.env.EMAIL_PASSWORD
+            }, 
+        });
+
+        
 
 
         // Send mail
