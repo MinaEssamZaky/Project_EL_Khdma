@@ -6,20 +6,27 @@ import { handleError } from '../../middleware/HandleError.js';
 import { AppError } from '../../utils/AppError.js';
 import { sendMail } from '../../emails/sendEmail.js';
 
-export const signUp = handleError(async (req, res,next) => {
-const { userName, email, password, phone} = req.body;
+export const signUp = handleError( (req, res,next) => {
+// const { userName, email, password, phone} = req.body;
 
-const existingUser = await userModel.findOne({ email });
-if (existingUser) {
-    return next(new AppError("Email already exists",400));
-}else {
-    const saltRounds = parseInt(process.env.SALT_ROUNDS)
-        const hashedPassword = await bcrypt.hashSync (password, saltRounds);
-                    const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "10m" });
-                    await sendMail(email, emailToken);
-    const user = await userModel.create({userName,email,password:hashedPassword,phone});
-    // Assuming sendMail is a function that sends a verification email
-    user? res.status(200).json({message: "User created successfully", user}): res.status(400).json({message: "Error creating user"})
+// const existingUser = await userModel.findOne({ email });
+// if (existingUser) {
+//     return next(new AppError("Email already exists",400));
+// }else {
+//     const saltRounds = parseInt(process.env.SALT_ROUNDS)
+//         const hashedPassword = await bcrypt.hashSync (password, saltRounds);
+//                     const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "10m" });
+//                     await sendMail(email, emailToken);
+//     const user = await userModel.create({userName,email,password:hashedPassword,phone});
+//     // Assuming sendMail is a function that sends a verification email
+//     user? res.status(200).json({message: "User created successfully", user}): res.status(400).json({message: "Error creating user"})
+
+  res.status(200).json({
+    EMAIL: process.env.EMAIL,
+    PASSWORD: process.env.PASSWORD
+  });
+}
+
     
 }})
 
