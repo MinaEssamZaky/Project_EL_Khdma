@@ -12,7 +12,7 @@ export const sendMail = async (email, token) => {
             service: "gmail",
             auth: {
                 user: process.env.SEND_EMAIL || "ugmmeeting@gmail.com",
-                pass: process.env.EMAIL_PASSWORD,
+                pass: process.env.EMAIL_PASSWORD
             }, 
         });
 
