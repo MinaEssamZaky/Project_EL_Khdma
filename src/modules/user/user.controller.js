@@ -246,13 +246,13 @@ export const UpdateWallet = handleError(async (req, res, next) => {
     createdAt: new Date()
 });
     
-    const updatedUser = await user.save();
+    const updatedWallet= await user.save();
     
     // Return success response
     res.status(200).json({ 
         message: 'Wallet updated successfully',
-        newBalance: updatedUser.wallet,
-        lastTransaction: updatedUser.walletHistory[updatedUser.walletHistory.length - 1]
+        newBalance: updatedWallet.wallet,
+        lastTransaction: updatedWallet.walletHistory[updatedWallet.walletHistory.length - 1]
     });
 });
 
