@@ -194,3 +194,22 @@ export const UpdatedRole = handleError(async (req, res, next) => {
 
 
 })
+
+
+export const UpdateWallet = handleError(async (req, res, next) => {
+    const { id } = req.params;
+    if (!id) {
+        return next(new AppError("User ID is required", 400));
+    }
+    if (req.user.role !== 'Admin' && req.user.role !== 'SuperAdmin') {
+        return next(new AppError("Access Denied", 403));
+    }
+    const user = await userModel.findById(id);
+    if (!user) {
+        return next(new AppError("User not found", 404));
+    }
+    const updateWallet= 
+    return res.status(200).json({ message: 'Wallet updated successfully', Wallet: updatedUser });
+
+
+})
