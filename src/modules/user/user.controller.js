@@ -243,7 +243,6 @@ export const UpdateWallet = handleError(async (req, res, next) => {
         userName: user.userName
     },
     previousBalance: user.wallet,
-    newBalance: operation === 'add' ? user.wallet + numAmount : user.wallet - numAmount,
     createdAt: new Date()
 });
     
@@ -251,7 +250,6 @@ export const UpdateWallet = handleError(async (req, res, next) => {
     
     // Return success response
     res.status(200).json({ 
-        success: true,
         message: 'Wallet updated successfully',
         newBalance: updatedUser.wallet,
         lastTransaction: updatedUser.walletHistory[updatedUser.walletHistory.length - 1]
