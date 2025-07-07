@@ -35,8 +35,23 @@ isConfirmed: {
     },
     wallet:{
          type: Number,
-         default: "0"
-    }
+         default: 0
+    },
+
+    walletHistory: [{
+        amount: Number,
+        operation: String, // 'add' أو 'remove'
+        description: String,
+        performedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user'
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+    }]
+    
 
 },
 {timestamps: true});
