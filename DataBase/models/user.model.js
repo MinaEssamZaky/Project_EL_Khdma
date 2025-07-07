@@ -43,16 +43,24 @@ isConfirmed: {
         operation: String, // 'add' أو 'remove'
         description: String,
         performedBy: {
+            type: String, // اسم الأدمن/السوبر أدمن
+            required: true
+        },
+        performedById: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'user'
+            ref: 'user',
+            required: true
+        },
+        role: {
+            type: String,
+            enum: ["SuperAdmin", "Admin"],
+            required: true
         },
         createdAt: {
             type: Date,
             default: Date.now
         }
     }]
-    
-
 },
 {timestamps: true});
 
