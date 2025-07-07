@@ -17,7 +17,7 @@ userRouter.get("/gitAllUsers",auth(),authorizeRoles("SuperAdmin","Admin"),GitAll
 userRouter.get("/gitAllAdmins",auth(),authorizeRoles("SuperAdmin"),GitAllAdmins)
 userRouter.put("/updateWallet/:id",auth(),authorizeRoles("SuperAdmin","Admin"),UpdateWallet)
 userRouter.get("/getMyWalletHistory",auth(),GetMyWalletHistory)
-userRouter.get("/GetMyWalletBalance",auth(),GetMyWalletBalance)
+userRouter.get("/getMyWalletBalance",auth(),GetMyWalletBalance)
 
 
 
