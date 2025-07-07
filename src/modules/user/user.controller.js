@@ -229,14 +229,21 @@ export const UpdateWallet = handleError(async (req, res, next) => {
     
     // Update wallet and history
     user.wallet = newBalance;
-    user.walletHistory.push({
-        amount: numAmount,
-        operation,
-        description: transactionDescription,
-        performedBy: req.user.userName,
-        performedById: req.user._id,
-        role: req.user.role
-    });
+   user.walletHistory.push({
+    amount: numAmount,
+    operation, // 'add' or 'remove'
+    description: transactionDescription,
+    performedBy: {
+        adminName: req.user.userName,
+        adminRole: req.user.role
+    },
+    walletOwner: {
+        userName: user.userName
+    },
+    previousBalance: user.wallet,
+    newBalance: operation === 'add' ? user.wallet + numAmount : user.wallet - numAmount,
+    createdAt: new Date()
+});
     
     const updatedUser = await user.save();
     
