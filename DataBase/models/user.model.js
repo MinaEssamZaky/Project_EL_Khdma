@@ -38,29 +38,38 @@ isConfirmed: {
          default: 0
     },
 
-    walletHistory: [{
-        amount: Number,
-        operation: String, // 'add' أو 'remove'
-        description: String,
-        performedBy: {
-            type: String, // اسم الأدمن/السوبر أدمن
-            required: true
-        },
-        performedById: {
+   walletHistory: [{
+    amount: Number,
+    operation: String,
+    description: String,
+    performedBy: {
+        adminId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'user',
             required: true
         },
-        role: {
+        adminName: String,
+        adminRole: {
             type: String,
             enum: ["SuperAdmin", "Admin"],
             required: true
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now
         }
-    }]
+    },
+    walletOwner: {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user',
+            required: true
+        },
+        userName: String
+    },
+    previousBalance: Number,
+    newBalance: Number,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+}]
 },
 {timestamps: true});
 
