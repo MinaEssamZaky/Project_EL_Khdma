@@ -248,3 +248,21 @@ export const UpdateWallet = handleError(async (req, res, next) => {
         lastTransaction: updatedUser.walletHistory[updatedUser.walletHistory.length - 1]
     });
 });
+
+export const GetMyWalletHistory = handleError(async (req, res, next) => {
+    const user = await userModel.findById(req.user._id);
+    if (!user) {return next(new AppError("User not found", 404));}
+    res.status(200).json({ 
+        message: 'My wallet history',
+        walletHistory: user.walletHistory,
+        currentBalance: user.wallet
+    });
+});
+
+export const GetMyWalletBalance = handleError(async (req, res, next) => {
+    const user = await userModel.findById(req.user._id);
+    if (!user) {
+        return next(new AppError("User not found", 404));
+    }
+    res.status(200).json({ message: 'My wallet balance',balance: user.wallet});
+});
