@@ -229,15 +229,17 @@ export const UpdateWallet = handleError(async (req, res, next) => {
     
     // Update wallet and history
     user.wallet = newBalance;
-   user.walletHistory.push({
+  user.walletHistory.push({
     amount: numAmount,
     operation, // 'add' or 'remove'
     description: transactionDescription,
     performedBy: {
+        adminId: req.user._id, // أضف هذا الحقل
         adminName: req.user.userName,
-        adminRole: req.user.role
+        adminRole: req.user.role // تأكد أنه 'Admin' أو 'SuperAdmin'
     },
     walletOwner: {
+        userId: user._id, // أضف هذا الحقل
         userName: user.userName
     },
     previousBalance: user.wallet,
