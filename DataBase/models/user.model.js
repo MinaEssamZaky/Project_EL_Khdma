@@ -69,7 +69,11 @@ isConfirmed: {
         type: Date,
         default: Date.now
     }
-}]
+}],
+      bookings: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "booking"
+  }]
 },
 {timestamps: true});
 
