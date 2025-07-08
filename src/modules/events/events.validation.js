@@ -10,7 +10,7 @@ export const eventValidation = Joi.object({
   responsiblePerson: Joi.string().min(3).max(50).required(),
   phone: Joi.string().length(11).pattern(/^[0-9]+$/).required(),
   price: Joi.number().min(0).required(),
-  images: Joi.array().items(Joi.string().uri()).min(1).max(4).required(),
+  images: Joi.array().items(Joi.string()).min(1).max(4).required(),
   needBus: Joi.boolean().default(false), 
   capacity: Joi.number().min(1), 
   availableSeats: Joi.number().min(0).max(Joi.ref("capacity")), 
