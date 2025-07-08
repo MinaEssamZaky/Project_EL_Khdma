@@ -13,8 +13,7 @@ const eventSchema = new mongoose.Schema({
   images: { type: [String], required: true },
   needBus: { type: Boolean },
   capacity: { type: Number },
-  avaliableSeats: { type: Number },
-  reservedSeats: { type: Number }  
+ reservedUsers: { type: [String], ref: "user" }
 }, { timestamps: true });
 
 const eventModel = mongoose.model("event", eventSchema);
