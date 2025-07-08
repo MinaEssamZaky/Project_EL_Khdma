@@ -13,7 +13,10 @@ const eventSchema = new mongoose.Schema({
   images: { type: [String], required: true },
   needBus: { type: Boolean },
   capacity: { type: Number },
- reservedUsers: { type: [String], ref: "user" }
+reservedUsers: [{ 
+  type: mongoose.Schema.Types.ObjectId, 
+  ref: "user" 
+}]
 }, { timestamps: true });
 
 const eventModel = mongoose.model("event", eventSchema);
