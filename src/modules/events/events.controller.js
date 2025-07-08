@@ -6,7 +6,7 @@ export const createEvent = handleError(async (req, res, next) => {
 if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
     return next(new AppError("Access Denied", 403));
   }
-  const { eventName, category, date, address, shortDescription, fullDescription, responsiblePerson, phone, price} = req.body;
+  const { eventName, category, date, address, shortDescription, fullDescription, responsiblePerson, phone, price,needBus,capacity,avaliableSeats,reservedSeats} = req.body;
 
 if (!req.files || req.files.length === 0) {
     return next(new AppError("No images were uploaded", 400));
@@ -24,6 +24,10 @@ if (!req.files || req.files.length === 0) {
     phone,
     price,
     images,
+    needBus,
+    capacity,
+    avaliableSeats,
+    reservedSeats
   });
 
   res.status(201).json({ message: "Event created successfully", event: newEvent });
