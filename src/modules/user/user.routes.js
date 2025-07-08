@@ -15,7 +15,7 @@ userRouter.put("/updatedRole/:id",validation(UpdatedRoleSchemaVal),auth(),author
 userRouter.delete("/delete/:id",auth(),authorizeRoles("SuperAdmin"),deleteUserById )
 userRouter.get("/gitAllUsers",auth(),authorizeRoles("SuperAdmin","Admin"),GitAllUsers)
 userRouter.get("/gitAllAdmins",auth(),authorizeRoles("SuperAdmin"),GitAllAdmins)
-userRouter.put("/updateWallet/:id",auth(),authorizeRoles("SuperAdmin","Admin"),UpdateWallet)
+userRouter.put("/updateWallet/:id",auth(),UpdateWallet)
 userRouter.get("/getMyWalletHistory",auth(),GetMyWalletHistory)
 userRouter.get("/getMyWalletBalance",auth(),GetMyWalletBalance)
 
