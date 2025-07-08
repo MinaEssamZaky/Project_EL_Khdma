@@ -5,7 +5,7 @@ export const eventValidation = Joi.object({
   category: Joi.string().valid("event", "trip").required(),
   date: Joi.date().greater("now").required(), 
   address: Joi.string().min(5).max(100).required(),
-  shortDescription: Joi.string().min(10).max(200).required(),
+  shortDescription: Joi.string().min(2).max(200).required(),
   fullDescription: Joi.string().min(2).max(1000).required(),
   responsiblePerson: Joi.string().min(3).max(50).required(),
   phone: Joi.string().length(11).pattern(/^[0-9]+$/).required(),
