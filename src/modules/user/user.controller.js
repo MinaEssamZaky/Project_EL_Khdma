@@ -201,8 +201,7 @@ export const UpdateWallet = handleError(async (req, res, next) => {
     const { amount, operation, description } = req.body;
     // Validate user ID
     if (!id) {return next(new AppError("User ID is required", 400));}
-    // Verify admin privileges
-    if (req.user.role !== 'Admin' && req.user.role !== 'SuperAdmin') {return next(new AppError("Access denied", 403));}
+    
     // Find the user
     const user = await userModel.findById(id);
     if (!user) {return next(new AppError("User not found", 404));}
