@@ -51,7 +51,7 @@ isConfirmed: {
         adminName: String,
         adminRole: {
             type: String,
-            enum: ["SuperAdmin", "Admin"],
+            enum: ["SuperAdmin", "Admin","User"],
             required: true
         }
     },
