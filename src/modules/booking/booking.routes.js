@@ -7,6 +7,6 @@ import { storage } from "../../utils/cloudinary.config.js"; // تأكد من م�
 const bookingRouter = express.Router();
 
 bookingRouter.post("/bookingByWallet",auth(),createBookingByWallet)
-bookingRouter.delete("/deleteBooking",auth(),authorizeRoles("Admin","SuperAdmin"),deleteBooking)
+bookingRouter.delete("/deleteBooking/:id",auth(),authorizeRoles("Admin","SuperAdmin"),deleteBooking)
 deleteBooking 
 export default  bookingRouter
