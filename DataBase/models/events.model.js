@@ -16,7 +16,7 @@ const eventSchema = new mongoose.Schema({
 reservedUsers: [{
   userId: { 
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User" 
+    ref: "user" 
   },
   userName: {
     type: String
