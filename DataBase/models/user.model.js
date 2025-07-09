@@ -74,11 +74,9 @@ isConfirmed: {
   bookingId: {  
     type: mongoose.Schema.Types.ObjectId,
     ref: "booking",
-    required: true
   },
   eventName: {   
     type: String,
-    required: true
   }
  
 }]
