@@ -51,6 +51,10 @@ res.status(200).json({ message: "success", events: getAll });
 
 
 export const getEventReservedsById = handleError(async (req, res, next) => {
+
+     if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
+    return next(new AppError("Access Denied", 403));
+  }
   const { id } = req.params;
 
   const event = await eventModel.findById(id) .populate({
