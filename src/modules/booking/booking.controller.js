@@ -37,9 +37,9 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
     operation: 'remove',
     description: `Booking for event: ${eventName}`,
     performedBy: {
-      adminId: 'system',
-      adminName: 'System',
-      adminRole: 'System'
+      adminId:  user._id,
+      adminName: user.userName,
+      adminRole: user.role
     },
     walletOwner: {
       userId: user._id,
