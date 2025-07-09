@@ -93,18 +93,18 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
 // });
 
 
-// export const deleteEvent = handleError(async (req, res, next) => {
-//   if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
-//     return next(new AppError("Access Denied", 403));
-//   }
+export const deleteBooking = handleError(async (req, res, next) => {
+  if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
+    return next(new AppError("Access Denied", 403));
+  }
 
-//   const { id } = req.params;
+  const { id } = req.params;
 
-//   const deletedEvent = await eventModel.findByIdAndDelete(id);
+  const deletedBooking = await bookingModel.findByIdAndDelete(id);
 
-//   if (!deletedEvent) {
-//     return res.status(404).json({ message: "Event not found" });
-//   }
+  if (!deletedBooking) {
+    return res.status(404).json({ message: "Booking not found" });
+  }
 
-//   res.status(200).json({ message: "Event deleted successfully" });
-// });
+  res.status(200).json({ message: "Booking deleted successfully" });
+});
