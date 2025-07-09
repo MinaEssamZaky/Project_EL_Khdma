@@ -13,10 +13,15 @@ const eventSchema = new mongoose.Schema({
   images: { type: [String], required: true },
   needsBus: { type: Boolean },
   capacity: { type: Number },
-reservedUsers: [{ 
-  type: mongoose.Schema.Types.ObjectId, 
-  ref: "user" 
-}],
+reservedUsers: [{
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User" 
+  },
+  userName: {
+    type: String
+  }               
+}]
    reservedCount: {
     type: Number,
     default: 0
