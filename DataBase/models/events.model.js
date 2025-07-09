@@ -14,14 +14,8 @@ const eventSchema = new mongoose.Schema({
   needsBus: { type: Boolean },
   capacity: { type: Number },
 reservedUsers: [{
-  _id: { 
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user" 
-  },
-  userName: {
-    type: String
-  }               
-}],
+    ref: "user"}],
    reservedCount: {
     type: Number,
     default: 0
