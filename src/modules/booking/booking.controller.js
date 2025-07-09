@@ -7,7 +7,6 @@ import { handleError } from "../../middleware/HandleError.js";
 export const createBookingByWallet = handleError(async (req, res, next) => {
   const { eventId, eventName, price, userName } = req.body;
   const userId = req.user._id;
-  const userName=req.user.userName
   const phone = req.user.phone
   // التحقق من البيانات المطلوبة
   if (!eventId || !eventName || price === undefined) {
