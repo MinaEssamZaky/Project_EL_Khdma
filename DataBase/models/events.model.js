@@ -16,7 +16,11 @@ const eventSchema = new mongoose.Schema({
 reservedUsers: [{ 
   type: mongoose.Schema.Types.ObjectId, 
   ref: "user" 
-}]
+}],
+   reservedCount: {
+    type: Number,
+    default: 0
+  }
 }, { timestamps: true });
 
 const eventModel = mongoose.model("event", eventSchema);
