@@ -69,7 +69,7 @@ export const getEventReservedsById = handleError(async (req, res, next) => {
   res.status(200).json({ message: "success", event });
 });
 
-export const getEvenById = handleError(async (req, res, next) => {
+export const getEventById = handleError(async (req, res, next) => {
   const { id } = req.params;
 
   const event = await eventModel.findById(id);
