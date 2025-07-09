@@ -35,7 +35,10 @@ if (!req.files || req.files.length === 0) {
 
 
 export const getAllEvents =  handleError(async (req, res, next) => {
-const getAll = await eventModel.find().sort({ date: 1 });
+const getAll = await eventModel.find() .populate({
+        path: 'reservedUsers',
+        select: 'username phone'
+      });;
 res.status(200).json({ message: "success", events: getAll });
 
 })
@@ -44,7 +47,10 @@ res.status(200).json({ message: "success", events: getAll });
 export const getEventById = handleError(async (req, res, next) => {
   const { id } = req.params;
 
-  const event = await eventModel.findById(id);
+  const event = await eventModel.findById(id) .populate({
+        path: 'reservedUsers',
+        select: 'username phone' 
+      });;
 
   if (!event) {
     return res.status(404).json({ message: "Event not found" });
