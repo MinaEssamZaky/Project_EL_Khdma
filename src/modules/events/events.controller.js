@@ -37,7 +37,7 @@ if (!req.files || req.files.length === 0) {
 export const getAllEvents =  handleError(async (req, res, next) => {
 const getAll = await eventModel.find() .populate({
         path: 'reservedUsers',
-        select: 'username phone'
+        select: 'firstName secName familyName phone' 
       });;
 res.status(200).json({ message: "success", events: getAll });
 
@@ -49,7 +49,7 @@ export const getEventById = handleError(async (req, res, next) => {
 
   const event = await eventModel.findById(id) .populate({
         path: 'reservedUsers',
-        select: 'username phone' 
+        select: 'firstName secName familyName phone' 
       });;
 
   if (!event) {
