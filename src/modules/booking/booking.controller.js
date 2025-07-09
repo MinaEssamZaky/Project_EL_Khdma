@@ -7,7 +7,6 @@ import { handleError } from "../../middleware/HandleError.js";
 export const createBookingByWallet = handleError(async (req, res, next) => {
   const { eventId, eventName, price, userName } = req.body;
   const userId = req.user._id;
-  const phone = req.user.phone
   // التحقق من البيانات المطلوبة
   if (!eventId || !eventName || price === undefined) {
     return next(new AppError('Missing required booking information', 400));
@@ -51,7 +50,7 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
     createdAt: new Date()
   });
   // تحديث الحدث
-  event.reservedUsers.push(userId,userName,phone);
+  event.reservedUsers.push(userId,userName);
   event.reservedCount = event.reservedUsers.length;
   // إنشاء سجل الحجز
   const booking = await bookingModel.create({
