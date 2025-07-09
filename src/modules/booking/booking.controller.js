@@ -50,7 +50,7 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
     createdAt: new Date()
   });
   // تحديث الحدث
-  event.reservedUsers.push(userId,userName);
+  event.reservedUsers.push(userId);
   event.reservedCount = event.reservedUsers.length;
   // إنشاء سجل الحجز
   const booking = await bookingModel.create({
@@ -63,7 +63,7 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
     userName
   });
   // تحديث المستخدم والحدث
-  user.bookings.push(booking._id,booking.eventName);
+  user.bookings.push(booking._id);
   await user.save();
   await event.save();
   res.status(201).json({message: 'Booking approved successfully',booking});
