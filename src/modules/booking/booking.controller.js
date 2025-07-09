@@ -53,7 +53,7 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
   event.reservedUsers.push(userId);
   event.reservedCount = event.reservedUsers.length;
   // إنشاء سجل الحجز
-  const booking = await Booking.create({
+  const booking = await bookingModel.create({
     user: userId,
     event: eventId,
     paymentMethod: 'wallet',
