@@ -14,7 +14,7 @@ const eventSchema = new mongoose.Schema({
   needsBus: { type: Boolean },
   capacity: { type: Number },
 reservedUsers: [{
-  userId: { 
+  _id: { 
     type: mongoose.Schema.Types.ObjectId,
     ref: "user" 
   },
