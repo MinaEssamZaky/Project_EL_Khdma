@@ -6,7 +6,7 @@ import { storage } from "../../utils/cloudinary.config.js"; // تأكد من م�
 
 const bookingRouter = express.Router();
 
-bookingRouter.post("/BookingByWallet",auth(),createBookingByWallet)
+bookingRouter.post("/bookingByWallet",auth(),createBookingByWallet)
 
 
 export default  bookingRouter
