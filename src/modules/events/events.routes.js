@@ -13,7 +13,7 @@ const upload = multer({ storage}); // استخدام الذاكرة لتخزين
 eventsRouter.post("/addEvent",auth(),authorizeRoles("Admin", "SuperAdmin"),upload.array ("images"),createEvent);
 eventsRouter.get("/getAllEvents",getAllEvents);
 eventsRouter.get("/getEventById/:id",getEventById);
-eventsRouter.get("/getEventReservedsById/:id",getEventReservedsById);
+eventsRouter.get("/getEventReservedsById/:id",auth(),authorizeRoles("Admin", "SuperAdmin"),getEventReservedsById);
 eventsRouter.delete("/deleteEvent/:id",auth(),authorizeRoles("Admin", "SuperAdmin"),deleteEvent);
  
 export default eventsRouter;
