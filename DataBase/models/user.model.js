@@ -70,11 +70,18 @@ isConfirmed: {
         default: Date.now
     }
 }],
-      bookings: [{
+     bookings: [{
+  bookingId: {  
     type: mongoose.Schema.Types.ObjectId,
-    ref: "booking"
-  }]
-},
+    ref: "booking",
+    required: true
+  },
+  eventName: {   
+    type: String,
+    required: true
+  }
+ 
+}]
 {timestamps: true});
 
 const userModel = mongoose.model("user", userSchema);
