@@ -1,6 +1,6 @@
 import eventModel from "../../../DataBase/models/events.model.js";
 import userModel from "../../../DataBase/models/user.model.js";
-import bookingModel from "../../../DataBase/models/booking.model.js";
+import bookingModel from "../../../DataBase/models/bookings.model.js";
 import { AppError } from "../../utils/AppError.js";
 import { handleError } from "../../middleware/HandleError.js";
 
