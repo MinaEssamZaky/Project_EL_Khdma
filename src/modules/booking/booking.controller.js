@@ -45,7 +45,7 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
       userId: user._id,
       userName: user.userName
     },
-    previousBalance: user.wallet + price,
+    previousBalance: user.wallet - price,
     newBalance: user.wallet,
     createdAt: new Date()
   });
