@@ -21,7 +21,7 @@ reservedUsers: [{
   userName: {
     type: String
   }               
-}]
+}],
    reservedCount: {
     type: Number,
     default: 0
