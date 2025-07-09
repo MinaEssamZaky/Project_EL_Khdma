@@ -71,14 +71,8 @@ isConfirmed: {
     }
 }],
      bookings: [{
-  bookingId: {  
     type: mongoose.Schema.Types.ObjectId,
     ref: "booking",
-  },
-  eventName: {   
-    type: String,
-  }
- 
 }]
 },
 {timestamps: true});
