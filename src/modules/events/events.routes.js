@@ -2,7 +2,7 @@ import express from "express";
 import multer from 'multer';
 import { auth, authorizeRoles } from "../../middleware/auth.js";
 import { validation } from "../../middleware/Validation.js";
-import { createEvent,getAllEvents,getEventById,deleteEvent} from "./events.controller.js";
+import { createEvent,getAllEvents,getEventById,deleteEvent,getEventReservedsById} from "./events.controller.js";
 import {eventValidation} from "./events.validation.js"
 import { storage } from "../../utils/cloudinary.config.js"; // تأكد من مسار الملف الصحيح
 
@@ -13,8 +13,9 @@ const upload = multer({ storage}); // استخدام الذاكرة لتخزين
 eventsRouter.post("/addEvent",auth(),authorizeRoles("Admin", "SuperAdmin"),upload.array ("images"),createEvent);
 eventsRouter.get("/getAllEvents",getAllEvents);
 eventsRouter.get("/getEventById/:id",getEventById);
+eventsRouter.get("/getEventReservedsById/:id",getEventReservedsById);
 eventsRouter.delete("/deleteEvent/:id",auth(),authorizeRoles("Admin", "SuperAdmin"),deleteEvent);
-
+ 
 export default eventsRouter;
 
 
