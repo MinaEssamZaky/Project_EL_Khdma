@@ -82,6 +82,7 @@ isConfirmed: {
   }
  
 }]
+},
 {timestamps: true});
 
 const userModel = mongoose.model("user", userSchema);
