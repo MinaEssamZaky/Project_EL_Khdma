@@ -34,7 +34,7 @@ if (!req.files || req.files.length === 0) {
 });
 
 
-export const getAllEvents =  handleError(async (req, res, next) => {
+export const getAllEventsReserveds =  handleError(async (req, res, next) => {
 const getAll = await eventModel.find() .populate({
         path: 'reservedUsers',
         select: 'firstName secName familyName phone' 
@@ -43,14 +43,32 @@ res.status(200).json({ message: "success", events: getAll });
 
 })
 
+export const getAllEvents=  handleError(async (req, res, next) => {
+const getAll = await eventModel.find();
+res.status(200).json({ message: "success", events: getAll });
 
-export const getEventById = handleError(async (req, res, next) => {
+})
+
+
+export const getEventReservedsById = handleError(async (req, res, next) => {
   const { id } = req.params;
 
   const event = await eventModel.findById(id) .populate({
         path: 'reservedUsers',
-        select: 'firstName secName familyName phone' 
+        select: 'userName, email,phone' 
       });;
+
+  if (!event) {
+    return res.status(404).json({ message: "Event not found" });
+  }
+
+  res.status(200).json({ message: "success", event });
+});
+
+export const getEvenById = handleError(async (req, res, next) => {
+  const { id } = req.params;
+
+  const event = await eventModel.findById(id);
 
   if (!event) {
     return res.status(404).json({ message: "Event not found" });
