@@ -1,3 +1,4 @@
+// models/bookingModel.js
 import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema({
@@ -11,17 +12,9 @@ const bookingSchema = new mongoose.Schema({
     ref: "event",
     required: true
   },
-  bookingDate: {
-    type: Date,
-    default: Date.now
-  },
-  numberOfSeats: {
-    type: Number,
-    required: true,
-    min: 1
-  },
-  totalPrice: {
-    type: Number,
+  paymentMethod: {
+    type: String,
+    enum: ["wallet", "proof"],
     required: true
   },
   status: {
@@ -29,15 +22,22 @@ const bookingSchema = new mongoose.Schema({
     enum: ["pending", "approved", "rejected"],
     default: "pending"
   },
-  payedTo:{ 
-    type: String, required: true
-  },
-  paymentMethod: {
-    type: String,
-    enum: ["wallet", "cash", "money transfer"],
+  amount: {
+    type: Number,
     required: true
   },
-  transactionId: String
+  screenshot: {
+    type: String,
+    required: function() { return this.paymentMethod === "proof"; }
+  },
+  responsiblePerson: {
+    type: String,
+    required: function() { return this.paymentMethod === "proof"; }
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 }, { timestamps: true });
 
 const bookingModel = mongoose.model("booking", bookingSchema);
