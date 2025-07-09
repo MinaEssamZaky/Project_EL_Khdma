@@ -34,22 +34,26 @@ if (!req.files || req.files.length === 0) {
 });
 
 
-export const getAllEventsReserveds =  handleError(async (req, res, next) => {
-const events = await eventModel.find()
+export const getAllEventsReserveds = handleError(async (req, res, next) => {
+  const events = await eventModel.find()
     .sort({ createdAt: -1 })
-    .select( eventName date price needsBus capacity reservedCount images )
+    .select('eventName date price needsBus capacity reservedCount images') 
     .populate({
-        path: 'reservedUsers',
-        select: 'userName email phone' 
-      });
+      path: 'reservedUsers',
+      select: 'userName email phone' 
+    });
 
-    const eventsWithAvailableSeats = events.map(event => ({
+  const eventsWithAvailableSeats = events.map(event => ({
     ...event._doc,
     availableSeats: event.capacity ? event.capacity - event.reservedCount : null
   }));
     
-res.status(200).json({ message: "success",count: events.length,events: eventsWithAvailableSeats});
-})
+  res.status(200).json({ 
+    message: "Events retrieved successfully",
+    count: events.length,
+    events: eventsWithAvailableSeats
+  });
+});
 
 export const getAllEvents=  handleError(async (req, res, next) => {
 const getAll = await eventModel.find();
