@@ -46,26 +46,34 @@ export const createEvent = handleError(async (req, res, next) => {
 });
 
 export const getAllEventsReserveds = handleError(async (req, res, next) => {
+  if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
+    return next(new AppError("Access Denied", 403));
+  }
+
   const events = await eventModel.find()
-    .sort({ createdAt: -1 })
+    .sort({ createdAt: -1 }) 
     .populate({
       path: 'reservedUsers',
       select: 'userName phone',
       populate: {
         path: 'bookings',
-        select: 'paymentMethod status createdAt event' 
+        select: 'paymentMethod status createdAt event',
+        match: { event: { $exists: true } } 
       }
     });
 
+  const result = events.map(event => ({
+    ...event._doc,
+    capacity: event.capacity,
+    reservedCount: event.reservedUsers.length
+  }));
 
   res.status(200).json({ 
     message: "Events retrieved successfully",
-    count: event.reservedUsers.length,
-    events,
-    capacity:event.capacity,
+    count: events.length,
+    events: result
   });
 });
-
 export const getAllEvents = handleError(async (req, res, next) => {
   const events = await eventModel.find().sort({ createdAt: -1 });
   res.status(200).json({ message: "success", events });
