@@ -53,38 +53,16 @@ export const getAllEventsReserveds = handleError(async (req, res, next) => {
       select: 'userName email phone',
       populate: {
         path: 'bookings',
-        match: { event: { $exists: true } },
         select: 'paymentMethod status createdAt event' 
       }
     });
 
-  const enrichedEvents = events.map(event => {
-    const reservedUsersWithBookingInfo = event.reservedUsers.map(user => {
-      const relatedBooking = user.bookings?.find(booking => 
-        booking.event && booking.event.toString() === event._id.toString()
-      );
-      
-      return {
-        ...user._doc,
-        bookingInfo: relatedBooking ? {
-          paymentMethod: relatedBooking.paymentMethod,
-          status: relatedBooking.status,
-          createdAt: relatedBooking.createdAt
-        } : null
-      };
-    });
-
-    return {
-      ...event._doc,
-      capacity: event.capacity,
-      reservedUsers: reservedUsersWithBookingInfo
-    };
-  });
 
   res.status(200).json({ 
     message: "Events retrieved successfully",
     count: enrichedEvents.length,
-    events: enrichedEvents
+    events: enrichedEvents,
+    capacity:event.capacity
   });
 });
 
