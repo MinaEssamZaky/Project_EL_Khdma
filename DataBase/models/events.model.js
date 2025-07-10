@@ -16,7 +16,7 @@ const eventSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   price: { type: Number, required: true, min: 0 },
   images: { type: [String], required: true },
-  needsBus: { type: Boolean},
+  needsBus: { type: Boolean, default: false},
   capacity: { type: Number, min: 0 },
   reservedUsers: [{
     type: mongoose.Schema.Types.ObjectId,
