@@ -35,9 +35,13 @@ const bookingSchema = new mongoose.Schema({
     required: function() { return this.paymentMethod === "proof"; }
   },
   createdAt: {
-    type: Date,
-    default: Date.now
+  type: Date,
+  default: () => {
+    const now = new Date();
+    now.setSeconds(0, 0);
+    return now;
   }
+}
 }, { timestamps: true });
 
 const bookingModel = mongoose.model("booking", bookingSchema);
