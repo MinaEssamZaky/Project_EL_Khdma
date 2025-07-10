@@ -46,9 +46,6 @@ export const createEvent = handleError(async (req, res, next) => {
 });
 
 export const getAllEventsReserveds = handleError(async (req, res, next) => {
-   if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
-    return next(new AppError("Access Denied", 403));
-  }
   const events = await eventModel.find()
     .sort({ createdAt: -1 })
     .populate({
@@ -56,14 +53,13 @@ export const getAllEventsReserveds = handleError(async (req, res, next) => {
       select: 'userName email phone',
       populate: {
         path: 'bookings',
-        match: { event: { $exists: true } }, 
-        select: 'paymentMethod status createdAt'
+        match: { event: { $exists: true } },
+        select: 'paymentMethod status createdAt event' 
       }
     });
 
   const enrichedEvents = events.map(event => {
     const reservedUsersWithBookingInfo = event.reservedUsers.map(user => {
-      // البحث عن الحجز المرتبط بهذا الحدث
       const relatedBooking = user.bookings?.find(booking => 
         booking.event && booking.event.toString() === event._id.toString()
       );
@@ -109,7 +105,7 @@ export const getEventReservedsById = handleError(async (req, res, next) => {
     select: 'userName email phone bookings',
     populate: {
       path: 'bookings',
-      match: { event: id }, // فقط الحجوزات المرتبطة بهذا الحدث
+      match: { event: id },
       select: 'paymentMethod status createdAt'
     }
   });
