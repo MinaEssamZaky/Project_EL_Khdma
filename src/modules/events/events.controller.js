@@ -37,10 +37,9 @@ export const createEvent = handleError(async (req, res, next) => {
     responsiblePerson,
     phone,
     price,
-    images,
     needsBus,
-    capacity
-    // reservedCount starts at 0 by default
+    capacity,
+    images
   });
 
   res.status(201).json({ message: "Event created successfully", event: newEvent });
