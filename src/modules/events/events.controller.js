@@ -105,8 +105,8 @@ export const getEventReservedsById = handleError(async (req, res, next) => {
     select: 'userName email phone bookings',
     populate: {
       path: 'bookings',
-      match: { event: id },
-      select: 'paymentMethod status createdAt'
+      match: { event: id }, // تأكد من أن الحجز مرتبط بهذا الحدث المحدد
+      select: 'paymentMethod status createdAt event' // أضفنا event هنا
     }
   });
 
@@ -118,16 +118,21 @@ export const getEventReservedsById = handleError(async (req, res, next) => {
   const enrichedEvent = {
     ...event._doc,
     capacity: event.capacity,
-    reservedUsers: event.reservedUsers.map(user => ({
-      ...user._doc,
-      bookingInfo: user.bookings && user.bookings.length > 0 
-        ? {
-            paymentMethod: user.bookings[0].paymentMethod,
-            status: user.bookings[0].status,
-            createdAt: user.bookings[0].createdAt
-          } 
-        : null
-    }))
+    reservedUsers: event.reservedUsers.map(user => {
+      // البحث عن الحجز المرتبط بهذا الحدث
+      const relatedBooking = user.bookings?.find(booking => 
+        booking.event && booking.event.toString() === id
+      );
+      
+      return {
+        ...user._doc,
+        bookingInfo: relatedBooking ? {
+          paymentMethod: relatedBooking.paymentMethod,
+          status: relatedBooking.status,
+          createdAt: relatedBooking.createdAt
+        } : null
+      };
+    })
   };
 
   res.status(200).json({ 
