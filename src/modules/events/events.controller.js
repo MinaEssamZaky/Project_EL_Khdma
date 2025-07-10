@@ -50,7 +50,7 @@ export const getAllEventsReserveds = handleError(async (req, res, next) => {
     .sort({ createdAt: -1 })
     .populate({
       path: 'reservedUsers',
-      select: 'userName email phone',
+      select: 'userName phone',
       populate: {
         path: 'bookings',
         select: 'paymentMethod status createdAt event' 
