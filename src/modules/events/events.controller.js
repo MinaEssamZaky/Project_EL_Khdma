@@ -63,7 +63,7 @@ export const getAllEventsReserveds = handleError(async (req, res, next) => {
 });
 
 export const getAllEvents = handleError(async (req, res, next) => {
-  const events = await eventModel.find();
+  const events = await eventModel.find().sort({ createdAt: -1 });
   res.status(200).json({ message: "success", events });
 });
 
