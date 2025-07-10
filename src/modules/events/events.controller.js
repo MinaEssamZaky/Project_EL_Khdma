@@ -60,9 +60,9 @@ export const getAllEventsReserveds = handleError(async (req, res, next) => {
 
   res.status(200).json({ 
     message: "Events retrieved successfully",
-    count: enrichedEvents.length,
-    events: enrichedEvents,
-    capacity:event.capacity
+    count: event.reservedUsers.length,
+    events,
+    capacity:event.capacity,
   });
 });
 
