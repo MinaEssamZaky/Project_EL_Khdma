@@ -80,19 +80,21 @@ export const getAllEvents = handleError(async (req, res, next) => {
 });
 
 export const getEventReservedsById = handleError(async (req, res, next) => {
+  // التحقق من الصلاحيات
   if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
     return next(new AppError("Access Denied", 403));
   }
   
   const { id } = req.params;
   
+  // جلب الحدث مع البيانات المرتبطة
   const event = await eventModel.findById(id).populate({
     path: 'reservedUsers',
-    select: 'userName email phone bookings',
+    select: 'userName phone bookings',
     populate: {
       path: 'bookings',
-      match: { event: id }, // تأكد من أن الحجز مرتبط بهذا الحدث المحدد
-      select: 'paymentMethod status createdAt event' // أضفنا event هنا
+      match: { event: id },
+      select: 'paymentMethod status createdAt'
     }
   });
 
@@ -100,25 +102,20 @@ export const getEventReservedsById = handleError(async (req, res, next) => {
     return next(new AppError("Event not found", 404));
   }
 
-  // إضافة معلومات الحجز لكل مستخدم
+  // إعداد البيانات للإرسال
   const enrichedEvent = {
     ...event._doc,
     capacity: event.capacity,
-    reservedUsers: event.reservedUsers.map(user => {
-      // البحث عن الحجز المرتبط بهذا الحدث
-      const relatedBooking = user.bookings?.find(booking => 
-        booking.event && booking.event.toString() === id
-      );
-      
-      return {
-        ...user._doc,
-        bookingInfo: relatedBooking ? {
-          paymentMethod: relatedBooking.paymentMethod,
-          status: relatedBooking.status,
-          createdAt: relatedBooking.createdAt
-        } : null
-      };
-    })
+    reservedCount: event.reservedUsers.length,
+    reservedUsers: event.reservedUsers.map(user => ({
+      ...user._doc,
+      bookingInfo: user.bookings && user.bookings.length > 0 ? {
+        paymentMethod: user.bookings[0].paymentMethod,
+        status: user.bookings[0].status,
+        createdAt: user.bookings[0].createdAt
+      } : null,
+      bookings: undefined // إخفاء مصفوفة bookings الأصلية
+    }))
   };
 
   res.status(200).json({ 
