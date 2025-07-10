@@ -256,7 +256,7 @@ export const UpdateWallet = handleError(async (req, res, next) => {
 });
 
 export const GetMyWalletHistory = handleError(async (req, res, next) => {
-    const user = await userModel.findById(req.user._id);
+    const user = await userModel.findById(req.user._id).sort({ createdAt: -1 });
     if (!user) {return next(new AppError("User not found", 404));}
     res.status(200).json({ 
         message: 'My wallet history',
