@@ -15,7 +15,6 @@ const eventSchema = new mongoose.Schema({
   responsiblePerson: { type: String, required: true },
   phone: { type: String, required: true },
   price: { type: Number, required: true, min: 0 },
-  images: { type: [String], required: true },
   needsBus: { type: Boolean},
   capacity: { type: Number, min: 0 },
   reservedUsers: [{
@@ -26,7 +25,8 @@ const eventSchema = new mongoose.Schema({
     type: Number,
     default: 0,
     min: 0
-  }
+  },
+   images: { type: [String], required: true }
 }, { timestamps: true });
 
 // Virtual for available seats
