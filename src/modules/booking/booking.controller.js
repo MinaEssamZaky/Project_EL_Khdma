@@ -120,11 +120,38 @@ export const createBookingByProof = handleError(async (req, res, next) => {
   await user.save();
 
   res.status(201).json({
-    message: 'Successfully created booking',
+    message: 'Successfully Send booking And Wait Approve By Admin',
     booking: newBooking
   });
 });
 
+export const updateBookingStatus = handleError(async (req, res, next) => {
+  const { id } = req.params; 
+  const { status } = req.body; 
+  if (!["approved", "rejected"].includes(status)) {
+    return next(new AppError("Invalid status value", 400));
+  }
+  // جلب الحجز والتأكد من وجوده
+  const booking = await bookingModel.findById(id);
+  if (!booking) {
+    return next(new AppError("Booking not found", 404));
+  }
+  // التأكد أن الحجز مازال في حالة pending
+  if (booking.status !== "pending") {
+    return next(new AppError("You can only update bookings with pending status", 400));
+  }
+  // التأكد أن الأدمن الحالي هو نفسه المسؤول
+  if (booking.admin.toString() !== req.user._id.toString()) {
+    return next(new AppError("You are not authorized to update this booking", 403));
+  }
+  // تحديث الحالة
+  booking.status = status;
+  await booking.save();
+  res.status(200).json({
+    message: `Booking ${status} successfully`,
+    booking
+  });
+});
 
 export const deleteBooking = handleError(async (req, res, next) => {
   // التحقق من صلاحية المستخدم
