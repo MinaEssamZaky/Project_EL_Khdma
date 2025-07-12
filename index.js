@@ -17,7 +17,7 @@ app.use(express.json())
 
 app.use(cors({
   origin: ['http://localhost:3000', 'https://ugm-family.vercel.app'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
