@@ -1,5 +1,5 @@
 import express from 'express';
-import {createBookingByWallet,deleteBooking,createBookingByProof} from "./booking.controller.js"
+import {createBookingByWallet,deleteBooking,createBookingByProof,updateBookingStatus} from "./booking.controller.js"
 import multer from 'multer';   
 import { auth, authorizeRoles } from "../../middleware/auth.js";
 import { storage } from '../../utils/cloudinary.config.js';
@@ -9,4 +9,6 @@ const bookingRouter = express.Router();
 bookingRouter.post("/bookingByWallet",auth(),createBookingByWallet)
 bookingRouter.post("/bookingByProof",auth() ,upload.single('screenshot'),createBookingByProof)
 bookingRouter.delete("/deleteBooking/:id",auth(),authorizeRoles("Admin","SuperAdmin"),deleteBooking) 
+bookingRouter.patch("/updateStatus/:id",auth(),authorizeRoles("Admin", "SuperAdmin"),updateBookingStatus);
+
 export default  bookingRouter
