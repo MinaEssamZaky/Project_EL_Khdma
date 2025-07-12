@@ -253,3 +253,20 @@ export const deleteBooking = handleError(async (req, res, next) => {
     refundProcessed: booking.status === 'approved' && booking.paymentMethod === 'wallet'
   });
 });
+
+export const getPendingBookingsForAdmin = handleError(async (req, res, next) => {
+  if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
+    return next(new AppError("Access Denied", 403));
+  }
+  const pendingBookings = await bookingModel.find({
+    status: "pending",
+    admin: req.user._id
+  }).populate("user", "userName email") 
+    .populate("event", "eventName date"); 
+  res.status(200).json({
+    message: "Pending bookings",
+    count: pendingBookings.length,
+    bookings: pendingBookings
+  });
+});
+
