@@ -3,7 +3,7 @@ import userModel from "../../../DataBase/models/user.model.js";
 import bookingModel from "../../../DataBase/models/bookings.model.js";
 import { AppError } from "../../utils/AppError.js";
 import { handleError } from "../../middleware/HandleError.js";
-
+import { cloudinary } from '../../../utils/cloudinary.config.js';
 export const createBookingByWallet = handleError(async (req, res, next) => {
   const { eventId, eventName, price, userName } = req.body;
   const userId = req.user._id;
@@ -71,24 +71,60 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
 
 
 
-// export const getAllEvents =  handleError(async (req, res, next) => {
-// const getAll = await eventModel.find().sort({ date: 1 });
-// res.status(200).json({ message: "success", events: getAll });
+export const createBookingByProof = handleError(async (req, res, next) => {
+  const { eventId, userId, adminId, responsiblePerson, price } = req.body;
 
-// })
+  if (!req.file) {
+    return next(new AppError("Payment Image Is Required"));
+  }
 
+  const screenshotPath = req.file.path;
 
-// export const getEventById = handleError(async (req, res, next) => {
-//   const { id } = req.params;
+  // التحقق من وجود الحدث
+  const event = await eventModel.findById(eventId);
+  if (!event) {
+    return next(new AppError('Event Not Found', 404));
+  }
 
-//   const event = await eventModel.findById(id);
+  // التحقق من وجود المستخدم
+  const user = await userModel.findById(userId);
+  if (!user) {
+    return next(new AppError('User Not Found', 404));
+  }
 
-//   if (!event) {
-//     return res.status(404).json({ message: "Event not found" });
-//   }
+  // التحقق من عدم وجود حجز سابق
+  const existingBooking = await bookingModel.findOne({
+    user: userId,
+    event: eventId,
+    status: { $in: ["pending", "approved"] }
+  });
+  if (existingBooking) {
+    return next(new AppError('You have already booked this event', 400));
+  }
+  const eventName = event.eventName;
+  const userName = user.userName;
 
-//   res.status(200).json({ message: "success", event });
-// });
+  const newBooking = await bookingModel.create({
+    user: userId,
+    event: eventId,
+    admin: adminId,
+    paymentMethod: "proof",
+    status: "pending",
+    amount: price,
+    screenshot: screenshotPath,
+    responsiblePerson,
+    eventName,
+    userName
+  });
+
+  user.bookings.push(newBooking._id);
+  await user.save();
+
+  res.status(201).json({
+    message: 'Successfully created booking',
+    booking: newBooking
+  });
+});
 
 
 export const deleteBooking = handleError(async (req, res, next) => {
