@@ -3,7 +3,6 @@ import userModel from "../../../DataBase/models/user.model.js";
 import bookingModel from "../../../DataBase/models/bookings.model.js";
 import { AppError } from "../../utils/AppError.js";
 import { handleError } from "../../middleware/HandleError.js";
-import { cloudinary } from '../../../utils/cloudinary.config.js';
 export const createBookingByWallet = handleError(async (req, res, next) => {
   const { eventId, eventName, price, userName } = req.body;
   const userId = req.user._id;
