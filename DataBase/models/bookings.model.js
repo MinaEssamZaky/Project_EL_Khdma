@@ -1,4 +1,3 @@
-// models/bookingModel.js
 import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema({
@@ -30,18 +29,26 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     required: function() { return this.paymentMethod === "proof"; }
   },
-  responsiblePerson: {
+  responsiblePerson: { 
     type: String,
     required: function() { return this.paymentMethod === "proof"; }
   },
+  eventName: { 
+    type: String,
+    required: true
+  },
+  userName: { 
+    type: String,
+    required: true
+  },
   createdAt: {
-  type: Date,
-  default: () => {
-    const now = new Date();
-    now.setSeconds(0, 0);
-    return now;
+    type: Date,
+    default: () => {
+      const now = new Date();
+      now.setSeconds(0, 0);
+      return now;
+    }
   }
-}
 }, { timestamps: true });
 
 const bookingModel = mongoose.model("booking", bookingSchema);
