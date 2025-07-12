@@ -126,27 +126,58 @@ export const createBookingByProof = handleError(async (req, res, next) => {
 });
 
 export const updateBookingStatus = handleError(async (req, res, next) => {
+  if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
+    return next(new AppError("Access Denied", 403));
+  }
+
   const { id } = req.params; 
   const { status } = req.body; 
+
   if (!["approved", "rejected"].includes(status)) {
     return next(new AppError("Invalid status value", 400));
   }
-  // جلب الحجز والتأكد من وجوده
+
   const booking = await bookingModel.findById(id);
   if (!booking) {
     return next(new AppError("Booking not found", 404));
   }
-  // التأكد أن الحجز مازال في حالة pending
+
   if (booking.status !== "pending") {
     return next(new AppError("You can only update bookings with pending status", 400));
   }
-  // التأكد أن الأدمن الحالي هو نفسه المسؤول
-  if (booking.admin.toString() !== req.user._id.toString()) {
+
+  if (booking.admin && booking.admin.toString() !== req.user._id.toString()) {
     return next(new AppError("You are not authorized to update this booking", 403));
   }
-  // تحديث الحالة
+
   booking.status = status;
+
+  if (status === "approved") {
+    const event = await eventModel.findById(booking.event);
+    if (!event) {
+      return next(new AppError("Associated event not found", 404));
+    }
+
+    if (event.capacity && event.reservedCount >= event.capacity) {
+      return next(new AppError('Event is fully booked', 400));
+    }
+
+    if (!event.reservedUsers.includes(booking.user.toString())) {
+      event.reservedUsers.push(booking.user);
+      event.reservedCount = event.reservedUsers.length;
+      await event.save();
+    }
+
+    // إضافة الحجز للمستخدم
+    const user = await userModel.findById(booking.user);
+    if (user && !user.bookings.includes(booking._id)) {
+      user.bookings.push(booking._id);
+      await user.save();
+    }
+  }
+
   await booking.save();
+
   res.status(200).json({
     message: `Booking ${status} successfully`,
     booking
