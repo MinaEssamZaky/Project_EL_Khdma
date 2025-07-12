@@ -162,8 +162,8 @@ export const GitAllUsers = handleError(async (req, res, next) => {
 
 
 export const GitAllAdmins = handleError(async (req, res, next) => {
-    const users = await userModel.find({ role: 'Admin' });
-    return res.status(200).json({ message: "All Admin", users });
+    const admins = await userModel.find({ role: 'Admin' });
+    return res.status(200).json({ message: "All Admin", admins });
 });
 
 
