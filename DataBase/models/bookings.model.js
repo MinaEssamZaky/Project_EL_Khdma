@@ -11,6 +11,11 @@ const bookingSchema = new mongoose.Schema({
     ref: "event",
     required: true
   },
+   admin: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: true
+  },
   paymentMethod: {
     type: String,
     enum: ["wallet", "proof"],
