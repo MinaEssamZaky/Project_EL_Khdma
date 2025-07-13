@@ -281,3 +281,11 @@ export const getAllBookingsForAdmin = handleError(async (req, res, next) => {
   });
 });
 
+export const getAllBookingsForUser = handleError(async (req, res, next) => {
+  const allBookings = await bookingModel.find({user: req.user._id}).populate("user", "userName phone") 
+  res.status(200).json({
+    message: "All bookings",
+    count: allBookings.length,
+    bookings: allBookings
+  });
+});
