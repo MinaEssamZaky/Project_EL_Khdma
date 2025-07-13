@@ -45,14 +45,6 @@ const bookingSchema = new mongoose.Schema({
   userName: { 
     type: String,
     required: true
-  },
-  createdAt: {
-    type: Date,
-    default: () => {
-      const now = new Date();
-      now.setSeconds(0, 0);
-      return now;
-    }
   }
 }, { timestamps: true });
 
