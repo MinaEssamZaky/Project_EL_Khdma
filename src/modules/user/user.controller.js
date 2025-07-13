@@ -77,6 +77,38 @@ export const LogIn = handleError(async (req, res, next) => {
     });
 });
 
+export const getAllBookingsForUser = handleError(async (req, res, next) => {
+    const userId = req.user._id;
+    const user = await userModel.findById(userId)
+        .populate({
+            path: 'bookings',
+            populate: {
+                path: 'event',
+                select: 'eventName date status',
+                options: { retainNullValues: true }
+            }
+        });
+
+    if (!user) {
+        return next(new AppError("User not found", 404));
+    }
+    const formattedBookings = user.bookings.map(booking => ({
+        _id: booking._id,
+        eventName: booking.event?.eventName || booking.eventName || "Event Not Available",
+        eventDate: booking.event?.date || "Date not available",
+        status: booking.status,
+        paymentMethod: booking.paymentMethod,
+        amount: booking.amount
+    }));
+    res.status(200).json({
+        message: "All bookings retrieved successfully",
+        count: formattedBookings.length,
+        Bookings: formattedBookings
+    });
+});
+
+
+
 export const VerifyEmail = handleError(async (req, res, next) => {
     const { token } = req.query;
     if (!token) {
