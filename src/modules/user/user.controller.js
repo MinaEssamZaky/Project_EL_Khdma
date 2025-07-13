@@ -54,7 +54,7 @@ export const LogIn = handleError(async (req, res, next) => {
     const token = jwt.sign({ id: User._id, email: User.email }, process.env.TOKEN, { expiresIn: "24h" });
 
     const formattedBookings = User.bookings.map(booking => {
-        const eventName = booking.event?.eventName || booking.eventName;
+        const eventName = booking.event?.eventName || booking.eventName || "Event Not Available ";
         const eventDate = booking.event?.date || "Date not available";
         return {
             _id: booking._id,
