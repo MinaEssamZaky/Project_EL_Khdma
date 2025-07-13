@@ -27,24 +27,48 @@ if (existingUser) {
 })
 
 
-export const LogIn = handleError(async (req,res,next)=>{
-    const {email,password} = req.body;
-    
-    const User= await userModel.findOne({email})
-    if(!User){
-            return next(new AppError("User Not Exist",400));
+export const LogIn = handleError(async (req, res, next) => {
+    const { email, password } = req.body;
+
+    const User = await userModel.findOne({ email })
+        .populate({
+            path: 'bookings',
+            populate: {
+                path: 'event',
+                select: 'eventName date status '
+            }
+        });
+
+    if (!User) {
+        return next(new AppError("User Not Exist", 400));
     }
     if (!User.isConfirmed) {
         return next(new AppError("Please verify your email first", 401));
     }
-    const MatchPassword= bcrypt.compareSync(password,User.password)
-    if(!MatchPassword){
-                    return next(new AppError("Wrong Password",400));
+    const MatchPassword = bcrypt.compareSync(password, User.password);
+    if (!MatchPassword) {
+        return next(new AppError("Wrong Password", 400));
     }
-    const token =jwt.sign({id:User._id,email:User.email},process.env.TOKEN,{expiresIn:"24h"})
-    res.status(200).json({message:"Done",Id:User._id,userName:User.userName,token,Role:User.role,wallet:User.wallet,Bookings:User.bookings})
-}
-)
+
+    const token = jwt.sign({ id: User._id, email: User.email }, process.env.TOKEN, { expiresIn: "24h" });
+
+    const formattedBookings = User.bookings.map(booking => ({
+        _id: booking._id,
+        eventName: booking.event.eventName,
+        eventDate: booking.event.date,
+        status: booking.status
+    }));
+
+    res.status(200).json({
+        message: "Done",
+        Id: User._id,
+        userName: User.userName,
+        token,
+        Role: User.role,
+        wallet: User.wallet,
+        Bookings: formattedBookings 
+    });
+});
 
 export const VerifyEmail = handleError(async (req, res, next) => {
     const { token } = req.query;
