@@ -14,7 +14,7 @@ const bookingSchema = new mongoose.Schema({
    admin: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
-    required: true
+    required: function() { return this.paymentMethod === "proof"; }
   },
   paymentMethod: {
     type: String,
