@@ -35,7 +35,8 @@ export const LogIn = handleError(async (req, res, next) => {
             path: 'bookings',
             populate: {
                 path: 'event',
-                select: 'eventName date status '
+                select: 'eventName date status',
+                options: { retainNullValues: true }
             }
         });
 
@@ -52,12 +53,18 @@ export const LogIn = handleError(async (req, res, next) => {
 
     const token = jwt.sign({ id: User._id, email: User.email }, process.env.TOKEN, { expiresIn: "24h" });
 
-    const formattedBookings = User.bookings.map(booking => ({
-        _id: booking._id,
-        eventName: booking.event.eventName,
-        eventDate: booking.event.date,
-        status: booking.status
-    }));
+    const formattedBookings = User.bookings.map(booking => {
+        const eventName = booking.event?.eventName || booking.eventName;
+        const eventDate = booking.event?.date || "Date not available";
+        return {
+            _id: booking._id,
+            eventName,
+            eventDate,
+            status: booking.status,
+            paymentMethod: booking.paymentMethod,
+            amount: booking.amount
+        };
+    });
 
     res.status(200).json({
         message: "Done",
