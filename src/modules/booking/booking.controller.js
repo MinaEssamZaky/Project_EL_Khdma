@@ -273,11 +273,11 @@ export const getAllBookingsForAdmin = handleError(async (req, res, next) => {
   if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
     return next(new AppError("Access Denied", 403));
   }
-  const pendingBookings = await bookingModel.find({admin: req.user._id}).populate("user", "userName phone") 
+  const allBookings = await bookingModel.find({admin: req.user._id}).populate("user", "userName phone") 
   res.status(200).json({
     message: "All bookings",
-    count: pendingBookings.length,
-    bookings: pendingBookings
+    count: allBookings.length,
+    bookings: allBookings
   });
 });
 
