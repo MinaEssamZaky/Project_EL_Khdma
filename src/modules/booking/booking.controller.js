@@ -282,7 +282,7 @@ export const getAllBookingsForAdmin = handleError(async (req, res, next) => {
 });
 
 export const getAllBookingsForUser = handleError(async (req, res, next) => {
-  const allBookings = await bookingModel.find({user: req.user._id})
+  const allBookings = await bookingModel.find({user: req.user._id}).populate("event", "eventName date")
   res.status(200).json({
     message: "All bookings",
     count: allBookings.length,
