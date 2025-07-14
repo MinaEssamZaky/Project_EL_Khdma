@@ -80,44 +80,41 @@ export const getAllEvents = handleError(async (req, res, next) => {
 });
 
 export const getEventReservedsById = handleError(async (req, res, next) => {
-  // التحقق من الصلاحيات
   if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
     return next(new AppError("Access Denied", 403));
   }
   
   const { id } = req.params;
   
-  // جلب الحدث مع البيانات المرتبطة
   const event = await eventModel.findById(id).populate({
     path: 'reservedUsers',
     select: 'userName phone bookings',
     populate: {
       path: 'bookings',
       match: { event: id },
-      select: 'paymentMethod status createdAt'
+      select: '_id paymentMethod status createdAt'
     }
   });
 
   if (!event) {
     return next(new AppError("Event not found", 404));
   }
-
-  // إعداد البيانات للإرسال
   const enrichedEvent = {
     ...event._doc,
     capacity: event.capacity,
     reservedCount: event.reservedUsers.length,
     reservedUsers: event.reservedUsers.map(user => ({
-      ...user._doc,
+      _id: user._id, // إضافة user id إذا كنت تريده
+      userName: user.userName,
+      phone: user.phone,
       bookingInfo: user.bookings && user.bookings.length > 0 ? {
+        bookingId: user.bookings[0]._id, // إضافة bookingId هنا
         paymentMethod: user.bookings[0].paymentMethod,
         status: user.bookings[0].status,
         createdAt: user.bookings[0].createdAt
-      } : null,
-      bookings: undefined // إخفاء مصفوفة bookings الأصلية
+      } : null
     }))
   };
-
   res.status(200).json({ 
     message: "success", 
     event: enrichedEvent 
