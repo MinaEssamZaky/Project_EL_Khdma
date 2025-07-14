@@ -257,63 +257,73 @@ export const UpdatedRole = handleError(async (req, res, next) => {
 
 
 export const UpdateWallet = handleError(async (req, res, next) => {
-    const { id } = req.params;
-    const { amount, operation, description } = req.body;
-    // Validate user ID
-    if (!id) {return next(new AppError("User ID is required", 400));}
-    
-    // Find the user
-    const user = await userModel.findById(id);
-    if (!user) {return next(new AppError("User not found", 404));}
-    // Validate input data
-    if (!amount || isNaN(amount) || amount <= 0) {return next(new AppError("Please enter a valid positive amount", 400));}
-    if (!['add', 'remove'].includes(operation)) {return next(new AppError("Invalid operation. Use 'add' to deposit or 'remove' to withdraw", 400));}
-    
-    const numAmount = Number(amount);
-    let newBalance = user.wallet;
-    let transactionDescription = description || "";
-    // Perform wallet operation
-    if (operation === 'add') {
-        newBalance = user.wallet + numAmount;
-        transactionDescription = transactionDescription || 
-            `Deposit by ${req.user.userName} (${req.user.role})`;
-    } else if (operation === 'remove') {
-        if (user.wallet < numAmount) {
-            return next(new AppError("Insufficient wallet balance", 400));
-        }
-        newBalance = user.wallet - numAmount;
-        transactionDescription = transactionDescription || 
-            `Withdrawal by ${req.user.userName} (${req.user.role})`;
+  const { id } = req.params;
+  const { amount, operation, description } = req.body;
+
+  if (!id) return next(new AppError("User ID is required", 400));
+
+  const user = await userModel.findById(id);
+  if (!user) return next(new AppError("User not found", 404));
+
+  if (!amount || isNaN(amount) || amount <= 0) {
+    return next(new AppError("Please enter a valid positive amount", 400));
+  }
+
+  if (!['add', 'remove'].includes(operation)) {
+    return next(new AppError("Invalid operation. Use 'add' or 'remove'", 400));
+  }
+
+  const numAmount = Number(amount);
+  const previousBalance = user.wallet; 
+  let newBalance = previousBalance;
+
+  let transactionDescription = description?.trim() || "";
+
+  if (operation === 'add') {
+    newBalance += numAmount;
+    if (!transactionDescription) {
+      transactionDescription = `Deposit by ${req.user.userName} (${req.user.role})`;
     }
-    
-    // Update wallet and history
-    user.wallet = newBalance;
+  } else if (operation === 'remove') {
+    if (user.wallet < numAmount) {
+      return next(new AppError("Insufficient wallet balance", 400));
+    }
+    newBalance -= numAmount;
+    if (!transactionDescription) {
+      transactionDescription = `Withdrawal by ${req.user.userName} (${req.user.role})`;
+    }
+  }
+
+  // Update the wallet
+  user.wallet = newBalance;
+
   user.walletHistory.push({
     amount: numAmount,
-    operation, // 'add' or 'remove'
+    operation,
     description: transactionDescription,
     performedBy: {
-        adminId: req.user._id, // أضف هذا الحقل
-        adminName: req.user.userName,
-        adminRole: req.user.role // تأكد أنه 'Admin' أو 'SuperAdmin'
+      adminId: req.user._id,
+      adminName: req.user.userName,
+      adminRole: req.user.role
     },
     walletOwner: {
-        userId: user._id, // أضف هذا الحقل
-        userName: user.userName
+      userId: user._id,
+      userName: user.userName
     },
-    previousBalance: user.wallet,
+    previousBalance,   
+    newBalance,      
     createdAt: new Date()
+  });
+
+  const updatedUser = await user.save();
+
+  res.status(200).json({
+    message: 'Wallet updated successfully',
+    newBalance: updatedUser.wallet,
+    lastTransaction: updatedUser.walletHistory.at(-1)
+  });
 });
-    
-    const updatedWallet= await user.save();
-    
-    // Return success response
-    res.status(200).json({ 
-        message: 'Wallet updated successfully',
-        newBalance: updatedWallet.wallet,
-        lastTransaction: updatedWallet.walletHistory[updatedWallet.walletHistory.length - 1]
-    });
-});
+
 
 export const GetMyWalletHistory = handleError(async (req, res, next) => {
     const user = await userModel.findById(req.user._id);
