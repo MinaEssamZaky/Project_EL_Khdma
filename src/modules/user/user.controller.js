@@ -350,3 +350,20 @@ export const GetMyWalletBalance = handleError(async (req, res, next) => {
     }
     res.status(200).json({ message: 'My wallet balance',balance: user.wallet});
 });
+
+export const ClearWalletHistory = handleError(async (req, res, next) => {
+  const { id } = req.params;
+  const user = await userModel.findById(id);
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+
+  user.walletHistory = [];
+  await user.save();
+
+  res.status(200).json({
+    message: "Wallet history cleared successfully",
+    userId: user._id,
+    remainingBalance: user.wallet
+  });
+});
