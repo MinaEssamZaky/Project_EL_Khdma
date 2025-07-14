@@ -4,70 +4,80 @@ import bookingModel from "../../../DataBase/models/bookings.model.js";
 import { AppError } from "../../utils/AppError.js";
 import { handleError } from "../../middleware/HandleError.js";
 export const createBookingByWallet = handleError(async (req, res, next) => {
-  const { eventId, eventName, price, userName } = req.body;
+  const { eventId, price } = req.body;
   const userId = req.user._id;
-  // التحقق من البيانات المطلوبة
-  if (!eventId || !eventName || price === undefined) {
+
+  if (!eventId || price === undefined) {
     return next(new AppError('Missing required booking information', 400));
   }
-  // التحقق من وجود الحدث
+
   const event = await eventModel.findById(eventId);
-  if (!event) {
-    return next(new AppError('Event not found', 404));
-  }
-  // التحقق من سعة الحدث
+  if (!event) return next(new AppError('Event not found', 404));
+
   if (event.capacity && event.reservedCount >= event.capacity) {
     return next(new AppError('Event is fully booked', 400));
   }
-  // التحقق من أن المستخدم لم يحجز الحدث مسبقاً
+
   if (event.reservedUsers.includes(userId)) {
     return next(new AppError('You have already booked this event', 400));
   }
-  // التحقق من رصيد المحفظة الكافي
+
   const user = await userModel.findById(userId);
+  if (!user) return next(new AppError('User not found', 404));
+
   if (user.wallet < price) {
     return next(new AppError('Insufficient wallet balance', 400));
   }
-  // خصم المبلغ من المحفظة
-  user.wallet -= price;
-  // تسجيل العملية في تاريخ المحفظة
+
+  const previousBalance = user.wallet;
+  const newBalance = previousBalance - price;
+
+  // خصم المبلغ وتسجيله
+  user.wallet = newBalance;
+
   user.walletHistory.push({
     amount: price,
     operation: 'remove',
-    description: `Booking for event: ${eventName}`,
+    description: `Booking for event: ${event.eventName}`,
     performedBy: {
-      adminId:  user._id,
-      adminName: user.userName,
-      adminRole: user.role
+      userId: user._id,
+      userName: user.userName,
+      userRole: user.role
     },
     walletOwner: {
       userId: user._id,
       userName: user.userName
     },
-    previousBalance: user.wallet + price,
-    newBalance: user.wallet,
+    previousBalance,
+    newBalance,
     createdAt: new Date()
   });
+
   // تحديث الحدث
   event.reservedUsers.push(userId);
   event.reservedCount = event.reservedUsers.length;
-  // إنشاء سجل الحجز
+
+  // إنشاء الحجز
   const booking = await bookingModel.create({
     user: userId,
     event: eventId,
     paymentMethod: 'wallet',
     status: 'approved',
     amount: price,
-    eventName,
-    userName
+    eventName: event.eventName,
+    userName: user.userName
   });
-  // تحديث المستخدم والحدث
+
   user.bookings.push(booking._id);
+
   await user.save();
   await event.save();
-  res.status(201).json({message: 'Booking approved successfully',booking});
-});
 
+  res.status(201).json({
+    message: 'Booking approved successfully',
+    booking
+  });
+});
 
 
 export const createBookingByProof = handleError(async (req, res, next) => {
