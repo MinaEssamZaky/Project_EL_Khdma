@@ -1,5 +1,5 @@
 import express from 'express';
-import {changePassword,deleteUserById,GitAllAdmins,GitAllUsers,LogIn,resendVerifyEmail,signUp,Updated,UpdatedRole, VerifyEmail, UpdateWallet,GetMyWalletHistory,GetMyWalletBalance,getAllBookingsForUser} from './user.controller.js';
+import {changePassword,deleteUserById,GitAllAdmins,GitAllUsers,LogIn,resendVerifyEmail,signUp,Updated,UpdatedRole, VerifyEmail, UpdateWallet,GetMyWalletHistory,GetMyWalletBalance,getAllBookingsForUser,ClearWalletHistory} from './user.controller.js';
 import { auth, authorizeRoles } from '../../middleware/auth.js';
 import { ChangePasswordSchemaVal, LogInSchemaVal, signUpSchemaVal, UpdatedRoleSchemaVal, UpdateSchemaVal } from './user.validation.js';
 import { validation } from '../../middleware/Validation.js';
@@ -19,6 +19,8 @@ userRouter.put("/updateWallet/:id",auth(),UpdateWallet)
 userRouter.get("/getMyWalletHistory",auth(),GetMyWalletHistory)
 userRouter.get("/getMyWalletBalance",auth(),GetMyWalletBalance)
 userRouter.get("/getAllBookingsForUser",auth(),getAllBookingsForUser);
+userRouter.patch("/clearWalletHistory/:id",auth(), ClearWalletHistory);
+
 
 
 export default userRouter;
