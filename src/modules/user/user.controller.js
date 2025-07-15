@@ -161,6 +161,42 @@ export const resendVerifyEmail = handleError(async (req, res, next) => {
                 return res.status(200).json({message:"password changed",user:updatedUser})
         })
 
+export const forgotPassword = handleError(async (req, res, next) => {
+  const { email } = req.body;
+
+  const user = await userModel.findOne({ email });
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+
+  const resetToken = jwt.sign({ id: user._id }, process.env.TOKEN, { expiresIn: "10m" });
+
+  const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+  await sendMail(email, resetToken, resetLink); // تحتاج تعدل sendMail ترسل الرابط
+
+  res.status(200).json({ message: "Reset link sent to email" });
+});
+
+
+export const resetPassword = handleError(async (req, res, next) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, process.env.TOKEN);
+    const user = await userModel.findById(decoded.id);
+    if (!user) return next(new AppError("User not found", 404));
+
+    const salt = parseInt(process.env.SALT_ROUNDS);
+    const hashed = bcrypt.hashSync(newPassword, salt);
+    user.password = hashed;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (err) {
+    return next(new AppError("Invalid or expired token", 400));
+  }
+});
 
 export const Updated = handleError(async (req,res,next)=>{
     const { userName, email ,phone} = req.body
