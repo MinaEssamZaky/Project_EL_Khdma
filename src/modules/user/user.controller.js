@@ -171,8 +171,8 @@ export const forgotPassword = handleError(async (req, res, next) => {
 
   const resetToken = jwt.sign({ id: user._id }, process.env.TOKEN, { expiresIn: "10m" });
 
-  const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-  await sendMail(email, resetToken, resetLink); // تحتاج تعدل sendMail ترسل الرابط
+  const resetLink = `${process.env.CLIENT_URL}/resetPassword/${resetToken}`;
+ await sendMail(email, resetToken, resetLink); 
 
   res.status(200).json({ message: "Reset link sent to email" });
 });
