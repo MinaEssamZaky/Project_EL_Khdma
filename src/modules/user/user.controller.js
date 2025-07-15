@@ -367,3 +367,10 @@ export const ClearWalletHistory = handleError(async (req, res, next) => {
     remainingBalance: user.wallet
   });
 });
+
+export const GetRole = handleError(async (req, res, next) => {
+    const user = await userModel.findById(req.user._id); 
+    if (!user) return next(new AppError("User not found", 404));
+
+    return res.status(200).json({ message: "User Role", role: user.role });
+});
