@@ -1,4 +1,3 @@
-// npm install nodemailer
 import nodemailer from "nodemailer";
 import { emailTemplate } from "./emailTemplate.js";
 import dotenv from "dotenv";
