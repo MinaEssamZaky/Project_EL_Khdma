@@ -1,3 +1,9 @@
+// npm install nodemailer
+import nodemailer from "nodemailer";
+import { emailTemplate } from "./emailTemplate.js";
+import dotenv from "dotenv";
+dotenv.config();
+
 export const sendMail = async (email, token, resetLink = null) => {
     try {
         const transporter = nodemailer.createTransport({
