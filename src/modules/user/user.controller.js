@@ -51,7 +51,7 @@ export const LogIn = handleError(async (req, res, next) => {
         return next(new AppError("Wrong Password", 400));
     }
 
-    const token = jwt.sign({ id: User._id, email: User.email }, process.env.TOKEN, { expiresIn: "24h" });
+    const token = jwt.sign({ id: User._id, email: User.email }, process.env.TOKEN, { expiresIn: "1m" });
 
     const formattedBookings = User.bookings.map(booking => {
         const eventName = booking.event?.eventName || booking.eventName || "Event Not Available ";
