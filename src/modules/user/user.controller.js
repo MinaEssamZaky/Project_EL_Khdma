@@ -15,7 +15,7 @@ if (existingUser) {
 }else {
     const saltRounds = parseInt(process.env.SALT_ROUNDS)
         const hashedPassword =bcrypt.hashSync (password, saltRounds);
-                    const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn:60 });
+                    const emailToken = jwt.sign({ email }, process.env.TOKEN, { expiresIn: "10m" });
                     await sendMail(email, emailToken);
     const user = await userModel.create({userName,email,password:hashedPassword,phone});
     // Assuming sendMail is a function that sends a verification email
@@ -51,7 +51,7 @@ export const LogIn = handleError(async (req, res, next) => {
         return next(new AppError("Wrong Password", 400));
     }
 
-    const token = jwt.sign({ id: User._id, email: User.email }, process.env.TOKEN, { expiresIn: "1m" });
+    const token = jwt.sign({ id: User._id, email: User.email }, process.env.TOKEN, { expiresIn: "14d" });
 
     const formattedBookings = User.bookings.map(booking => {
         const eventName = booking.event?.eventName || booking.eventName || "Event Not Available ";
