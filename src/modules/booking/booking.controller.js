@@ -141,7 +141,7 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
   }
 
   const { id } = req.params; 
-  const { status } = req.body; 
+  const { status, paidAmount, comment } = req.body; 
 
   if (!["approved", "rejected"].includes(status)) {
     return next(new AppError("Invalid status value", 400));
@@ -178,6 +178,23 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
       await event.save();
     }
 
+    // 🟢 تحديث حالة الدفع
+    if (typeof paidAmount === "number") {
+      booking.paidAmount = paidAmount;
+
+      if (paidAmount >= booking.totalAmount) {
+        booking.paymentStatus = "Paid in Full";  // مدفوع كامل
+        booking.remainingAmount = 0;
+      } else if (paidAmount > 0 && paidAmount < booking.totalAmount) {
+        booking.paymentStatus = "Partially Paid"; // مدفوع جزئي
+        booking.remainingAmount = booking.totalAmount - paidAmount;
+        booking.comment = comment || `Remaining amount: ${booking.remainingAmount}`;
+      } else {
+        booking.paymentStatus = "Unpaid";
+        booking.remainingAmount = booking.totalAmount;
+      }
+    }
+
     // إضافة الحجز للمستخدم
     const user = await userModel.findById(booking.user);
     if (user && !user.bookings.includes(booking._id)) {
@@ -190,7 +207,17 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
 
   res.status(200).json({
     message: `Booking ${status} successfully`,
-    booking
+    booking: {
+      id: booking._id,
+      status: booking.status,
+      totalAmount: booking.totalAmount,
+      paidAmount: booking.paidAmount,
+      remainingAmount: booking.remainingAmount,
+      paymentStatus: booking.paymentStatus,
+      comment: booking.comment,
+      user: booking.user,
+      event: booking.event,
+    }
   });
 });
 
