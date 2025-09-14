@@ -244,35 +244,39 @@ if (status === "partiallyApproved") {
 
 
 export const deleteBooking = handleError(async (req, res, next) => {
-  if (!["Admin", "SuperAdmin"].includes(req.user.role)) {
+  if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
     return next(new AppError("Access Denied", 403));
   }
 
   const { id } = req.params;
 
-  const booking = await bookingModel.findById(id).lean();
+  // 1️⃣ هات البوكينج
+  const booking = await bookingModel.findById(id);
   if (!booking) return next(new AppError("Booking not found", 404));
 
- const user = await userModel.findById(booking.user);
-
+  // 2️⃣ هات اليوزر
+  const user = await userModel.findById(booking.user);
   if (!user) return next(new AppError("User not found", 404));
 
+  // 3️⃣ شيل الحجز من عند اليوزر
   user.bookings.pull(booking._id);
-  
+
   let refundProcessed = false;
 
-  if (booking.status === 'approved') {
+  // 4️⃣ لو الحجز Approved → رجع فلوسه وشيل من الحدث
+  if (booking.status === "approved") {
     await eventModel.findByIdAndUpdate(booking.event, {
       $pull: { reservedUsers: booking.user },
       $inc: { reservedCount: -1 }
     });
 
-    if (booking.paymentMethod === 'wallet') {
+    // 🟢 لو الدفع بالمحفظة → رجع الفلوس
+    if (booking.paymentMethod === "wallet") {
       const previousBalance = user.wallet;
-      user.wallet += booking.amount;
+      user.wallet += booking.paidAmount || 0; // رجّع اللي دفعه بس
       user.walletHistory.push({
-        amount: booking.amount,
-        operation: 'add',
+        amount: booking.paidAmount || 0,
+        operation: "add",
         description: `Refund for cancelled booking: ${booking.eventName}`,
         performedBy: {
           adminId: req.user._id,
@@ -291,15 +295,18 @@ export const deleteBooking = handleError(async (req, res, next) => {
     }
   }
 
+  // 5️⃣ احفظ التعديلات
   await user.save();
   await bookingModel.findByIdAndDelete(id);
 
+  // 6️⃣ الرد
   res.status(200).json({
     success: true,
     message: "Booking deleted successfully",
     refundProcessed
   });
 });
+
 
 
 export const getPendingBookingsForAdmin = handleError(async (req, res, next) => {
