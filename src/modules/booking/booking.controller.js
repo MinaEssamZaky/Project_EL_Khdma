@@ -119,7 +119,7 @@ export const createBookingByProof = handleError(async (req, res, next) => {
     admin: adminId,
     paymentMethod: "proof",
     status: "pending",
-    amount: totalAmount,
+    totalAmount: totalAmount,
     screenshot: screenshotPath,
     responsiblePerson,
     eventName,
