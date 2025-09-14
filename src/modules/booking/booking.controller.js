@@ -4,10 +4,10 @@ import bookingModel from "../../../DataBase/models/bookings.model.js";
 import { AppError } from "../../utils/AppError.js";
 import { handleError } from "../../middleware/HandleError.js";
 export const createBookingByWallet = handleError(async (req, res, next) => {
-  const { eventId, totalAmount } = req.body;
+  const { eventId, price } = req.body;
   const userId = req.user._id;
 
-  if (!eventId || totalAmount === undefined) {
+  if (!eventId || price === undefined) {
     return next(new AppError('Missing required booking information', 400));
   }
 
@@ -25,18 +25,18 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
   const user = await userModel.findById(userId);
   if (!user) return next(new AppError('User not found', 404));
 
-  if (user.wallet < totalAmount) {
+  if (user.wallet < price) {
     return next(new AppError('Insufficient wallet balance', 400));
   }
 
   const previousBalance = user.wallet;
-  const newBalance = previousBalance - totalAmount;
+  const newBalance = previousBalance - price;
 
   // خصم المبلغ وتسجيله
   user.wallet = newBalance;
 
   user.walletHistory.push({
-    amount: totalAmount,
+    amount: price,
     operation: 'remove',
     description: `Booking for event: ${event.eventName}`,
     performedBy: {
@@ -63,7 +63,7 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
     event: eventId,
     paymentMethod: 'wallet',
     status: 'approved',
-    amount: totalAmount,
+    amount: price,
     eventName: event.eventName,
     userName: user.userName
   });
