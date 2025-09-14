@@ -111,7 +111,10 @@ export const getEventReservedsById = handleError(async (req, res, next) => {
         bookingId: user.bookings[0]._id, // إضافة bookingId هنا
         paymentMethod: user.bookings[0].paymentMethod,
         status: user.bookings[0].status,
-        createdAt: user.bookings[0].createdAt
+        createdAt: user.bookings[0].createdAt,
+         paidAmount : user.bookings[0].paidAmount ,
+           comment : user.bookings[0].comment ,
+           totalAmount : user.bookings[0].totalAmount,
       } : null
     }))
   };
