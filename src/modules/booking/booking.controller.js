@@ -4,10 +4,10 @@ import bookingModel from "../../../DataBase/models/bookings.model.js";
 import { AppError } from "../../utils/AppError.js";
 import { handleError } from "../../middleware/HandleError.js";
 export const createBookingByWallet = handleError(async (req, res, next) => {
-  const { eventId, price } = req.body;
+  const { eventId, totalAmount } = req.body;
   const userId = req.user._id;
 
-  if (!eventId || price === undefined) {
+  if (!eventId || totalAmount === undefined) {
     return next(new AppError('Missing required booking information', 400));
   }
 
@@ -25,18 +25,18 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
   const user = await userModel.findById(userId);
   if (!user) return next(new AppError('User not found', 404));
 
-  if (user.wallet < price) {
+  if (user.wallet < totalAmount) {
     return next(new AppError('Insufficient wallet balance', 400));
   }
 
   const previousBalance = user.wallet;
-  const newBalance = previousBalance - price;
+  const newBalance = previousBalance - totalAmount;
 
   // خصم المبلغ وتسجيله
   user.wallet = newBalance;
 
   user.walletHistory.push({
-    amount: price,
+    amount: totalAmount,
     operation: 'remove',
     description: `Booking for event: ${event.eventName}`,
     performedBy: {
@@ -63,7 +63,7 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
     event: eventId,
     paymentMethod: 'wallet',
     status: 'approved',
-    amount: price,
+    amount: totalAmount,
     eventName: event.eventName,
     userName: user.userName
   });
@@ -81,7 +81,7 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
 
 
 export const createBookingByProof = handleError(async (req, res, next) => {
-  const { eventId, userId, adminId, responsiblePerson, price } = req.body;
+  const { eventId, userId, adminId, responsiblePerson, totalAmount } = req.body;
 
   if (!req.file) {
     return next(new AppError("Payment Image Is Required"));
@@ -119,7 +119,7 @@ export const createBookingByProof = handleError(async (req, res, next) => {
     admin: adminId,
     paymentMethod: "proof",
     status: "pending",
-    amount: price,
+    amount: totalAmount,
     screenshot: screenshotPath,
     responsiblePerson,
     eventName,
