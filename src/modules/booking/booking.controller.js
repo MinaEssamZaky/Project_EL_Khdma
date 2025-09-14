@@ -141,7 +141,7 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
   }
 
   const { id } = req.params; 
-  const { status,comment } = req.body; 
+  const { status, comment } = req.body; 
 
   if (!["approved", "rejected", "partiallyApproved"].includes(status)) {
     return next(new AppError("Invalid status value", 400));
@@ -178,23 +178,22 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
       await event.save();
     }
 
-    // 🟢 في حالة الدفع الكامل
+    // 🟢 حالة الموافقة الكاملة
     if (status === "approved") {
       booking.paymentStatus = "Paid in Full";
       booking.comment = null;
     }
 
-   // 🟢 في حالة الدفع الجزئي
+    // 🟢 حالة الموافقة الجزئية
+    if (status === "partiallyApproved") {
+      if (!comment) {
+        return next(new AppError("Comment is required for partially approved bookings", 400));
+      }
+      booking.paymentStatus = "Partially Paid";
+      booking.comment = comment;
+    }
 
-  if (!comment) {
-    return next(new AppError("Comment is required for partially approved bookings", 400));
-  }
-    booking.paymentStatus = "Partially Paid";
-    booking.comment = comment;
-}
-
-
-    // إضافة الحجز للمستخدم
+    // 🟢 إضافة الحجز للمستخدم
     const user = await userModel.findById(booking.user);
     if (user && !user.bookings.includes(booking._id)) {
       user.bookings.push(booking._id);
@@ -217,6 +216,7 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
     }
   });
 });
+
 
 export const updateBookingComment = handleError(async (req, res, next) => {
   if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
@@ -224,54 +224,44 @@ export const updateBookingComment = handleError(async (req, res, next) => {
   }
 
   const { id } = req.params; 
-  const { status,comment } = req.body; 
+  const { status, comment } = req.body; 
 
-  if (!["approved","partiallyApproved"].includes(status)) {
+  // مسموح بس بالحالتين دول
+  if (!["approved", "partiallyApproved"].includes(status)) {
     return next(new AppError("Invalid status value", 400));
   }
 
+  // هات الحجز
   const booking = await bookingModel.findById(id);
   if (!booking) {
     return next(new AppError("Booking not found", 404));
   }
 
+  // تحقق من صلاحية الأدمن
   if (booking.admin && booking.admin.toString() !== req.user._id.toString()) {
     return next(new AppError("You are not authorized to update this booking", 403));
   }
 
+  // 🟢 تعديل الحالة والكومنت
   booking.status = status;
 
-    // 🟢 في حالة الدفع الكامل
-    if (status === "approved") {
-      booking.paymentStatus = "Paid in Full";
-      booking.comment = null;
-    }
-
-   // 🟢 في حالة الدفع الجزئي
-if (status === "partiallyApproved") {
-     if (!comment) {
-    return next(new AppError("Comment is required for partially approved bookings", 400));
+  if (status === "approved") {
+    booking.paymentStatus = "Paid in Full";
+    booking.comment = null; // الكومنت يتم مسحه
   }
+
+  if (status === "partiallyApproved") {
+    if (!comment) {
+      return next(new AppError("Comment is required for partially approved bookings", 400));
+    }
     booking.paymentStatus = "Partially Paid";
-    booking.comment = comment;
-}
-
-     
-    }
-  
-
-    // إضافة الحجز للمستخدم
-    const user = await userModel.findById(booking.user);
-    if (user && !user.bookings.includes(booking._id)) {
-      user.bookings.push(booking._id);
-      await user.save();
-    }
+    booking.comment = comment; // تحديث الكومنت
   }
 
   await booking.save();
 
   res.status(200).json({
-    message: `Booking ${status} successfully`,
+    message: `Booking updated successfully`,
     booking: {
       id: booking._id,
       status: booking.status,
@@ -283,6 +273,7 @@ if (status === "partiallyApproved") {
     }
   });
 });
+
 
 
 
