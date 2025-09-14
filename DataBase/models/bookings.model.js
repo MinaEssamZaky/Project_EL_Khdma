@@ -33,17 +33,7 @@ const bookingSchema = new mongoose.Schema({
     required: true
   },
 
-  // 🟢 المبلغ المدفوع (افتراضي 0)
-  paidAmount: {
-    type: Number,
-    default: 0
-  },
-
-  // 🟢 المبلغ المتبقي
-  remainingAmount: {
-    type: Number,
-    default: 0
-  },
+ 
 
   // 🟢 حالة الدفع
   paymentStatus: {
