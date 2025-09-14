@@ -180,7 +180,7 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
 
     // 🟢 تحديث حالة الدفع
     if (typeof paidAmount === "number") {
-      booking.paidAmount = paidAmount;
+      booking.paidAmount += paidAmount;
 
       if (paidAmount >= booking.totalAmount) {
         booking.paymentStatus = "Paid in Full";  // مدفوع كامل
