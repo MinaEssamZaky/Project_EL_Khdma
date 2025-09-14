@@ -92,7 +92,7 @@ export const getEventReservedsById = handleError(async (req, res, next) => {
     populate: {
       path: 'bookings',
       match: { event: id },
-      select: '_id paymentMethod status createdAt'
+      select: '_id paymentMethod status createdAt paidAmount comment totalAmount'
     }
   });
 
