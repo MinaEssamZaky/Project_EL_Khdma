@@ -257,39 +257,39 @@ export const deleteBooking = handleError(async (req, res, next) => {
 
   //if (!user) return next(new AppError("User not found", 404));
 
-  user.bookings.pull(booking._id);
+  // user.bookings.pull(booking._id);
   
-  let refundProcessed = false;
+  // let refundProcessed = false;
 
-  if (booking.status === 'approved') {
-    await eventModel.findByIdAndUpdate(booking.event, {
-      $pull: { reservedUsers: booking.user },
-      $inc: { reservedCount: -1 }
-    });
+  // if (booking.status === 'approved') {
+  //   await eventModel.findByIdAndUpdate(booking.event, {
+  //     $pull: { reservedUsers: booking.user },
+  //     $inc: { reservedCount: -1 }
+  //   });
 
-    if (booking.paymentMethod === 'wallet') {
-      const previousBalance = user.wallet;
-      user.wallet += booking.amount;
-      user.walletHistory.push({
-        amount: booking.amount,
-        operation: 'add',
-        description: `Refund for cancelled booking: ${booking.eventName}`,
-        performedBy: {
-          adminId: req.user._id,
-          adminName: req.user.userName,
-          adminRole: req.user.role
-        },
-        walletOwner: {
-          userId: user._id,
-          userName: user.userName
-        },
-        previousBalance,
-        newBalance: user.wallet,
-        createdAt: new Date()
-      });
-      refundProcessed = true;
-    }
-  }
+  //   if (booking.paymentMethod === 'wallet') {
+  //     const previousBalance = user.wallet;
+  //     user.wallet += booking.amount;
+  //     user.walletHistory.push({
+  //       amount: booking.amount,
+  //       operation: 'add',
+  //       description: `Refund for cancelled booking: ${booking.eventName}`,
+  //       performedBy: {
+  //         adminId: req.user._id,
+  //         adminName: req.user.userName,
+  //         adminRole: req.user.role
+  //       },
+  //       walletOwner: {
+  //         userId: user._id,
+  //         userName: user.userName
+  //       },
+  //       previousBalance,
+  //       newBalance: user.wallet,
+  //       createdAt: new Date()
+  //     });
+  //     refundProcessed = true;
+  //   }
+  // }
 
   await user.save();
   await bookingModel.findByIdAndDelete(id);
