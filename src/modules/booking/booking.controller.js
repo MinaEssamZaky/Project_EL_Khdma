@@ -253,9 +253,9 @@ export const deleteBooking = handleError(async (req, res, next) => {
   const booking = await bookingModel.findById(id).lean();
   if (!booking) return next(new AppError("Booking not found", 404));
 
-  const user = await userModel.findById(booking.user);
+ // const user = await userModel.findById(booking.user);
 
-  if (!user) return next(new AppError("User not found", 404));
+  //if (!user) return next(new AppError("User not found", 404));
 
   user.bookings.pull(booking._id);
   
