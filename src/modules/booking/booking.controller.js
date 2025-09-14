@@ -141,7 +141,7 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
   }
 
   const { id } = req.params; 
-  const { status, paidAmount, comment } = req.body; 
+  const { status,comment } = req.body; 
 
   if (!["approved", "rejected", "partiallyApproved"].includes(status)) {
     return next(new AppError("Invalid status value", 400));
@@ -180,39 +180,17 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
 
     // 🟢 في حالة الدفع الكامل
     if (status === "approved") {
-      booking.paidAmount = booking.totalAmount;
-      booking.remainingAmount = 0;
       booking.paymentStatus = "Paid in Full";
       booking.comment = null;
     }
 
    // 🟢 في حالة الدفع الجزئي
-if (status === "partiallyApproved") {
-  if (typeof paidAmount !== "number" || paidAmount <= 0) {
-    return next(new AppError("Paid amount is required and must be greater than 0", 400));
-  }
+
   if (!comment) {
     return next(new AppError("Comment is required for partially approved bookings", 400));
   }
-
-  // لو مفيش قيمة مبدئية خليها صفر
-  booking.paidAmount = booking.paidAmount || 0;
-
-  // اجمع الدفعة الجديدة
-  booking.paidAmount += paidAmount;
-
-  // احسب الباقي
-  booking.remainingAmount = booking.totalAmount - booking.paidAmount;
-
-  if (booking.paidAmount >= booking.totalAmount) {
-    booking.paymentStatus = "Paid in Full";
-    booking.remainingAmount = 0;
-    booking.status = "approved"; // اتحول لمدفوع بالكامل
-    booking.comment = null;
-  } else {
     booking.paymentStatus = "Partially Paid";
     booking.comment = comment;
-  }
 }
 
 
@@ -232,8 +210,6 @@ if (status === "partiallyApproved") {
       id: booking._id,
       status: booking.status,
       totalAmount: booking.totalAmount,
-      paidAmount: booking.paidAmount,
-      remainingAmount: booking.remainingAmount,
       paymentStatus: booking.paymentStatus,
       comment: booking.comment,
       user: booking.user,
@@ -241,6 +217,73 @@ if (status === "partiallyApproved") {
     }
   });
 });
+
+export const updateBookingComment = handleError(async (req, res, next) => {
+  if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
+    return next(new AppError("Access Denied", 403));
+  }
+
+  const { id } = req.params; 
+  const { status,comment } = req.body; 
+
+  if (!["approved","partiallyApproved"].includes(status)) {
+    return next(new AppError("Invalid status value", 400));
+  }
+
+  const booking = await bookingModel.findById(id);
+  if (!booking) {
+    return next(new AppError("Booking not found", 404));
+  }
+
+  if (booking.admin && booking.admin.toString() !== req.user._id.toString()) {
+    return next(new AppError("You are not authorized to update this booking", 403));
+  }
+
+  booking.status = status;
+
+    // 🟢 في حالة الدفع الكامل
+    if (status === "approved") {
+      booking.paymentStatus = "Paid in Full";
+      booking.comment = null;
+    }
+
+   // 🟢 في حالة الدفع الجزئي
+if (status === "partiallyApproved") {
+     if (!comment) {
+    return next(new AppError("Comment is required for partially approved bookings", 400));
+  }
+    booking.paymentStatus = "Partially Paid";
+    booking.comment = comment;
+}
+
+     
+    }
+  
+
+    // إضافة الحجز للمستخدم
+    const user = await userModel.findById(booking.user);
+    if (user && !user.bookings.includes(booking._id)) {
+      user.bookings.push(booking._id);
+      await user.save();
+    }
+  }
+
+  await booking.save();
+
+  res.status(200).json({
+    message: `Booking ${status} successfully`,
+    booking: {
+      id: booking._id,
+      status: booking.status,
+      totalAmount: booking.totalAmount,
+      paymentStatus: booking.paymentStatus,
+      comment: booking.comment,
+      user: booking.user,
+      event: booking.event,
+    }
+  });
+});
+
 
 
 export const deleteBooking = handleError(async (req, res, next) => {
