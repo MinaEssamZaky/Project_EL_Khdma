@@ -186,28 +186,35 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
       booking.comment = null;
     }
 
-    // 🟢 في حالة الدفع الجزئي
-    if (status === "partiallyApproved") {
-      if (typeof paidAmount !== "number" || paidAmount <= 0) {
-        return next(new AppError("Paid amount is required and must be greater than 0", 400));
-      }
-      if (!comment) {
-        return next(new AppError("Comment is required for partially approved bookings", 400));
-      }
+   // 🟢 في حالة الدفع الجزئي
+if (status === "partiallyApproved") {
+  if (typeof paidAmount !== "number" || paidAmount <= 0) {
+    return next(new AppError("Paid amount is required and must be greater than 0", 400));
+  }
+  if (!comment) {
+    return next(new AppError("Comment is required for partially approved bookings", 400));
+  }
 
-      booking.paidAmount += paidAmount;
+  // لو مفيش قيمة مبدئية خليها صفر
+  booking.paidAmount = booking.paidAmount || 0;
 
-      if (booking.paidAmount >= booking.totalAmount) {
-        booking.paymentStatus = "Paid in Full";
-        booking.remainingAmount = 0;
-        booking.status = "approved"; // لو دفع المبلغ كله نغيرها لـ approved
-        booking.comment = null;
-      } else {
-        booking.paymentStatus = "Partially Paid";
-        booking.remainingAmount = booking.totalAmount - booking.paidAmount;
-        booking.comment = comment;
-      }
-    }
+  // اجمع الدفعة الجديدة
+  booking.paidAmount += paidAmount;
+
+  // احسب الباقي
+  booking.remainingAmount = booking.totalAmount - booking.paidAmount;
+
+  if (booking.paidAmount >= booking.totalAmount) {
+    booking.paymentStatus = "Paid in Full";
+    booking.remainingAmount = 0;
+    booking.status = "approved"; // اتحول لمدفوع بالكامل
+    booking.comment = null;
+  } else {
+    booking.paymentStatus = "Partially Paid";
+    booking.comment = comment;
+  }
+}
+
 
     // إضافة الحجز للمستخدم
     const user = await userModel.findById(booking.user);
