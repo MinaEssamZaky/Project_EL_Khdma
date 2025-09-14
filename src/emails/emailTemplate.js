@@ -35,7 +35,7 @@ export function emailTemplate(token){
 										<tr>
 											<td style="padding-bottom: 20px;" align="center" valign="top" class="imgHero">
 												<a href="#" style="text-decoration:none" target="_blank">
-													<img alt="" border="0" src="https://drive.google.com/file/d/1lRpeBUUljnZepIfPY_-x7PSo15dx11wE/view?usp=sharing" style="width:100%;max-width:600px;height:auto;display:block;color: #f9f9f9;" width="600">
+													<img alt="" border="0" src="https://github.com/MinaEssamZaky/Project_EL_Khdma/blob/main/src/emails/UGM.jpg" style="width:100%;max-width:600px;height:auto;display:block;color: #f9f9f9;" width="600">
 												</a>
 											</td>
 										</tr>
