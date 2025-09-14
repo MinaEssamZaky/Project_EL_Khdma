@@ -143,7 +143,7 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
   const { id } = req.params; 
   const { status, paidAmount, comment } = req.body; 
 
-  if (!["approved", "rejected"].includes(status)) {
+  if (!["approved", "rejected", "partiallyApproved"].includes(status)) {
     return next(new AppError("Invalid status value", 400));
   }
 
@@ -162,14 +162,14 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
 
   booking.status = status;
 
-  if (status === "approved") {
+  if (status === "approved" || status === "partiallyApproved") {
     const event = await eventModel.findById(booking.event);
     if (!event) {
       return next(new AppError("Associated event not found", 404));
     }
 
     if (event.capacity && event.reservedCount >= event.capacity) {
-      return next(new AppError('Event is fully booked', 400));
+      return next(new AppError("Event is fully booked", 400));
     }
 
     if (!event.reservedUsers.includes(booking.user.toString())) {
@@ -178,20 +178,34 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
       await event.save();
     }
 
-    // 🟢 تحديث حالة الدفع
-    if (typeof paidAmount === "number") {
+    // 🟢 في حالة الدفع الكامل
+    if (status === "approved") {
+      booking.paidAmount = booking.totalAmount;
+      booking.remainingAmount = 0;
+      booking.paymentStatus = "Paid in Full";
+      booking.comment = null;
+    }
+
+    // 🟢 في حالة الدفع الجزئي
+    if (status === "partiallyApproved") {
+      if (typeof paidAmount !== "number" || paidAmount <= 0) {
+        return next(new AppError("Paid amount is required and must be greater than 0", 400));
+      }
+      if (!comment) {
+        return next(new AppError("Comment is required for partially approved bookings", 400));
+      }
+
       booking.paidAmount += paidAmount;
 
-      if (paidAmount >= booking.totalAmount) {
-        booking.paymentStatus = "Paid in Full";  // مدفوع كامل
+      if (booking.paidAmount >= booking.totalAmount) {
+        booking.paymentStatus = "Paid in Full";
         booking.remainingAmount = 0;
-      } else if (paidAmount > 0 && paidAmount < booking.totalAmount) {
-        booking.paymentStatus = "Partially Paid"; // مدفوع جزئي
-        booking.remainingAmount = booking.totalAmount - paidAmount;
-        booking.comment = comment || `Remaining amount: ${booking.remainingAmount}`;
+        booking.status = "approved"; // لو دفع المبلغ كله نغيرها لـ approved
+        booking.comment = null;
       } else {
-        booking.paymentStatus = "Unpaid";
-        booking.remainingAmount = booking.totalAmount;
+        booking.paymentStatus = "Partially Paid";
+        booking.remainingAmount = booking.totalAmount - booking.paidAmount;
+        booking.comment = comment;
       }
     }
 
@@ -220,6 +234,7 @@ export const updateBookingStatus = handleError(async (req, res, next) => {
     }
   });
 });
+
 
 export const deleteBooking = handleError(async (req, res, next) => {
   if (!["Admin", "SuperAdmin"].includes(req.user.role)) {
