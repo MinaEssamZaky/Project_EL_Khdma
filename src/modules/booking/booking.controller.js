@@ -253,43 +253,43 @@ export const deleteBooking = handleError(async (req, res, next) => {
   const booking = await bookingModel.findById(id).lean();
   if (!booking) return next(new AppError("Booking not found", 404));
 
- // const user = await userModel.findById(booking.user);
+ const user = await userModel.findById(booking.user);
 
-  //if (!user) return next(new AppError("User not found", 404));
+  if (!user) return next(new AppError("User not found", 404));
 
-  // user.bookings.pull(booking._id);
+  user.bookings.pull(booking._id);
   
-  // let refundProcessed = false;
+  let refundProcessed = false;
 
-  // if (booking.status === 'approved') {
-  //   await eventModel.findByIdAndUpdate(booking.event, {
-  //     $pull: { reservedUsers: booking.user },
-  //     $inc: { reservedCount: -1 }
-  //   });
+  if (booking.status === 'approved') {
+    await eventModel.findByIdAndUpdate(booking.event, {
+      $pull: { reservedUsers: booking.user },
+      $inc: { reservedCount: -1 }
+    });
 
-  //   if (booking.paymentMethod === 'wallet') {
-  //     const previousBalance = user.wallet;
-  //     user.wallet += booking.amount;
-  //     user.walletHistory.push({
-  //       amount: booking.amount,
-  //       operation: 'add',
-  //       description: `Refund for cancelled booking: ${booking.eventName}`,
-  //       performedBy: {
-  //         adminId: req.user._id,
-  //         adminName: req.user.userName,
-  //         adminRole: req.user.role
-  //       },
-  //       walletOwner: {
-  //         userId: user._id,
-  //         userName: user.userName
-  //       },
-  //       previousBalance,
-  //       newBalance: user.wallet,
-  //       createdAt: new Date()
-  //     });
-  //     refundProcessed = true;
-  //   }
-  // }
+    if (booking.paymentMethod === 'wallet') {
+      const previousBalance = user.wallet;
+      user.wallet += booking.amount;
+      user.walletHistory.push({
+        amount: booking.amount,
+        operation: 'add',
+        description: `Refund for cancelled booking: ${booking.eventName}`,
+        performedBy: {
+          adminId: req.user._id,
+          adminName: req.user.userName,
+          adminRole: req.user.role
+        },
+        walletOwner: {
+          userId: user._id,
+          userName: user.userName
+        },
+        previousBalance,
+        newBalance: user.wallet,
+        createdAt: new Date()
+      });
+      refundProcessed = true;
+    }
+  }
 
   await user.save();
   await bookingModel.findByIdAndDelete(id);
@@ -321,7 +321,7 @@ export const getAllBookingsForAdmin = handleError(async (req, res, next) => {
   if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
     return next(new AppError("Access Denied", 403));
   }
-  const allBookings = await bookingModel.find({admin: req.user._id}).populate("user", "userName phone") 
+  const allBookings = await bookingModel.find({admin: req.user._id}).populate("user", "userName phone","paidAmount","comment","totalAmount") 
   res.status(200).json({
     message: "All bookings",
     count: allBookings.length,
