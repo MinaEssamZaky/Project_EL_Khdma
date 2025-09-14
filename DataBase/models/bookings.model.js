@@ -11,10 +11,10 @@ const bookingSchema = new mongoose.Schema({
     ref: "event",
     required: true
   },
-   admin: {
+  admin: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
-    required: function() { return this.paymentMethod === "proof"; }
+    required: function () { return this.paymentMethod === "proof"; }
   },
   paymentMethod: {
     type: String,
@@ -26,23 +26,51 @@ const bookingSchema = new mongoose.Schema({
     enum: ["pending", "approved", "rejected"],
     default: "pending"
   },
-  amount: {
+
+  // 🟢 المبلغ الكلي المطلوب
+  totalAmount: {
     type: Number,
     required: true
   },
+
+  // 🟢 المبلغ المدفوع (افتراضي 0)
+  paidAmount: {
+    type: Number,
+    default: 0
+  },
+
+  // 🟢 المبلغ المتبقي
+  remainingAmount: {
+    type: Number,
+    default: 0
+  },
+
+  // 🟢 حالة الدفع
+  paymentStatus: {
+    type: String,
+    enum: ["Unpaid", "Partially Paid", "Paid in Full"],
+    default: "Unpaid"
+  },
+
+  // 🟢 تعليق الادمن (لو دفع جزئي)
+  comment: {
+    type: String,
+    default: null
+  },
+
   screenshot: {
     type: String,
-    required: function() { return this.paymentMethod === "proof"; }
+    required: function () { return this.paymentMethod === "proof"; }
   },
-  responsiblePerson: { 
+  responsiblePerson: {
     type: String,
-    required: function() { return this.paymentMethod === "proof"; }
+    required: function () { return this.paymentMethod === "proof"; }
   },
-  eventName: { 
+  eventName: {
     type: String,
     required: true
   },
-  userName: { 
+  userName: {
     type: String,
     required: true
   }
