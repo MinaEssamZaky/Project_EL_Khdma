@@ -33,12 +33,13 @@ export function emailTemplate(token){
 										</tr>
 										
 										<tr>
-											<td style="padding-bottom: 20px;" align="center" valign="top" class="imgHero">
-												<a href="#" style="text-decoration:none" target="_blank">
-													<img alt="" border="0" src="https://github.com/MinaEssamZaky/Project_EL_Khdma/blob/main/src/emails/UGM.jpg" style="width:100%;max-width:600px;height:auto;display:block;color: #f9f9f9;" width="600">
-												</a>
-											</td>
-										</tr>
+                                         <td style="padding-bottom: 20px;" align="center" valign="top" class="imgHero">
+                                       <a href="#" style="text-decoration:none" target="_blank">
+      <img alt="" border="0" src="https://raw.githubusercontent.com/MinaEssamZaky/Project_EL_Khdma/main/src/emails/UGM.jpg" style="width:100%;max-width:600px;height:auto;display:block;color: #f9f9f9;" width="600">
+                                      </a>
+                                     </td>
+                                     </tr>
+
 										<tr>
 											<td style="padding-bottom: 5px; padding-left: 20px; padding-right: 20px;" align="center" valign="top" class="mainTitle">
 <h2 class="text" style="color:#000;font-family:Poppins,Helvetica,Arial,sans-serif;font-size:28px;font-weight:500;font-style:normal;letter-spacing:normal;line-height:36px;text-transform:none;text-align:center;padding:0;margin:0">
