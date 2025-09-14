@@ -306,7 +306,19 @@ export const deleteBooking = handleError(async (req, res, next) => {
   await user.save();
   await bookingModel.findByIdAndDelete(id);
 
-  // 6️⃣ الرد
+  // 6️⃣ نظّف الحجوزات孤 (اللي ملهاش يوزر)
+await bookingModel.deleteMany({ user: { $exists: true, $nin: await userModel.distinct("_id") } });
+
+// 7️⃣ شيّل المستخدمين اللي ظهروا في reservedUsers من غير ما يبقى عندهم حجز
+const event = await eventModel.findById(booking.event);
+if (event) {
+  const validUserIds = await bookingModel.distinct("user", { event: event._id });
+  event.reservedUsers = event.reservedUsers.filter(userId =>
+    validUserIds.map(id => id.toString()).includes(userId.toString())
+  );
+  event.reservedCount = event.reservedUsers.length;
+  await event.save();
+}
   res.status(200).json({
     success: true,
     message: "Booking deleted successfully",
