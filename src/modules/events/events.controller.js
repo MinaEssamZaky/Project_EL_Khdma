@@ -51,29 +51,36 @@ export const getAllEventsReserveds = handleError(async (req, res, next) => {
   }
 
   const events = await eventModel.find()
-    .sort({ createdAt: -1 }) 
+    .sort({ createdAt: -1 })
     .populate({
-      path: 'reservedUsers',
-      select: 'userName phone',
+      path: "reservedUsers",
+      select: "userName phone bookings",
       populate: {
-        path: 'bookings',
-        select: 'paymentMethod status createdAt event',
-        match: { event: { $exists: true } } 
+        path: "bookings",
+        select: "paymentMethod status createdAt event"
       }
     });
 
-  const result = events.map(event => ({
-    ...event._doc,
-    capacity: event.capacity,
-    reservedCount: event.reservedUsers.length
-  }));
+  // 🟢 فلترة المستخدمين اللي مالهمش حجز في الحدث
+  const result = events.map(event => {
+    const validReservedUsers = event.reservedUsers.filter(user =>
+      user.bookings.some(b => b.event?.toString() === event._id.toString())
+    );
 
-  res.status(200).json({ 
+    return {
+      ...event._doc,
+      reservedUsers: validReservedUsers,
+      reservedCount: validReservedUsers.length
+    };
+  });
+
+  res.status(200).json({
     message: "Events retrieved successfully",
     count: events.length,
     events: result
   });
 });
+
 export const getAllEvents = handleError(async (req, res, next) => {
   const events = await eventModel.find().sort({ createdAt: -1 });
   res.status(200).json({ message: "success", events });
