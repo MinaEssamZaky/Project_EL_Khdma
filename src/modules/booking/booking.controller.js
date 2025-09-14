@@ -256,7 +256,14 @@ export const deleteBooking = handleError(async (req, res, next) => {
 
   // 2️⃣ هات اليوزر
   const user = await userModel.findById(booking.user);
-  if (!user) return next(new AppError("User not found", 404));
+  if (!user) {
+    await bookingModel.findByIdAndDelete(id);
+    return res.status(200).json({
+      success: true,
+      message: "Booking deleted because user does not exist",
+      refundProcessed: false
+    });
+  }
 
   // 3️⃣ شيل الحجز من عند اليوزر
   user.bookings.pull(booking._id);
