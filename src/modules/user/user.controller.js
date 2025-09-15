@@ -199,18 +199,11 @@ export const resetPassword = handleError(async (req, res, next) => {
 });
 
 export const Updated = handleError(async (req,res,next)=>{
-    const { userName, email ,phone} = req.body
+    const {email ,phone} = req.body
     const user = await userModel.findById(req.user._id)
 
         if (!user) {
                 return next(new AppError("User not found",400));
-    }
-
-    if (userName) {
-        if(user.userName == userName){
-        return next(new AppError("UserName already exists",400));
-        }
-        user.userName = userName;
     }
 
     if (email) {
