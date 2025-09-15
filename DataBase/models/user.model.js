@@ -27,6 +27,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    
+    qrCode: String,
+    
     password: {
         type: String,
         required: true,
