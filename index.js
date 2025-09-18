@@ -10,6 +10,7 @@ import { contactRouter } from './src/modules/contact/contact.routes.js'
 import  eventsRouter  from './src/modules/events/events.routes.js'
 import memoryRouter from './src/modules/memory/memory.routes.js'
 import bookingRouter from './src/modules/booking/booking.routes.js'
+import attendanceRouter from './src/modules/attendance Meeting/attendanceMeeting.routes.js'
 
 dotenv.config()
 const app = express()
@@ -29,6 +30,7 @@ app.use("/api/v1/contact", contactRouter)
 app.use("/api/v1/event", eventsRouter)
 app.use("/api/v1/memory", memoryRouter);
 app.use("/api/v1/booking", bookingRouter);
+app.use("/api/v1/attendanceMeeting", attendanceRouter);
 
 
 app.get("/", (req, res) => {
