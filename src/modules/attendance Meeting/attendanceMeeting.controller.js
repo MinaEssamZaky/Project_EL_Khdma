@@ -59,20 +59,26 @@ export const markAttendance = handleError(async (req, res, next) => {
 });
 
 export const getMeetingById = handleError(async (req, res) => {
-    if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
+  if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
     return res.status(403).json({ message: "Access Denied" });
-}
-
+  }
 
   const { id } = req.params;
+
+  // ✅ استخدم populate بشكل صحيح
   const meeting = await attendanceModel.findById(id)
+    .populate({
+      path: "records.user",
+      select: "userName"  // هيا دي اللي هترجع بس اسم اليوزر
+    });
 
-  if (!meeting) return res.status(404).json({ message: "Meeting not found" });
+  if (!meeting) {
+    return res.status(404).json({ message: "Meeting not found" });
+  }
 
+  res.json({ message: "done", meeting });
+});
 
-  res.json({message :"done", meeting } );
-  
-})
 
 export const getAllMeetings = handleError(async (req, res) => {
     if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
