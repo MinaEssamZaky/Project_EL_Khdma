@@ -91,3 +91,18 @@ export const getAllMeetings = handleError(async (req, res) => {
 
 })
 
+export const deleteMeeting = handleError(async (req, res, next) => {
+  if (req.user.role !== "Admin" && req.user.role !== "SuperAdmin") {
+    return next(new AppError("Access Denied", 403));
+  }
+
+  const { id } = req.params;
+  const deleteMeeting = await attendanceModel.findByIdAndDelete(id);
+
+  if (!deleteMeeting) {
+    return next(new AppError("Meeting not found", 404));
+  }
+
+  res.status(200).json({ message: "Meeting deleted successfully" });
+});
+
