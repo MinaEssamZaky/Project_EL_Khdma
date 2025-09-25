@@ -27,12 +27,12 @@ export const createPromoCode = handleError(async (req, res, next) => {
 
 // ✅ Apply
 export const applyPromoCode = handleError(async (req, res, next) => {
-  const { code } = req.body;
+  const { promoCode } = req.body;
   const userId = req.user._id;
 
-  if (!code) return next(new AppError('Promo code is required', 400));
+  if (!promoCode) return next(new AppError('Promo code is required', 400));
 
-  const promo = await PromoCode.findOne({ code, isActive: true });
+  const promo = await PromoCode.findOne({ promoCode, isActive: true });
   if (!promo) return next(new AppError('Invalid or inactive promo code', 404));
   if (promo.expiresAt && promo.expiresAt < new Date())
     return next(new AppError('Promo code has expired', 400));
@@ -40,7 +40,7 @@ export const applyPromoCode = handleError(async (req, res, next) => {
   const user = await userModel.findById(userId);
   if (!user) return next(new AppError('User not found', 404));
 
-  if (hasUsedPromo(user, code))
+  if (hasUsedPromo(user, promoCode))
     return next(new AppError('You have already used this promo code', 400));
 
   const previousBalance = user.wallet;
