@@ -28,8 +28,10 @@ const userSchema = new mongoose.Schema({
         unique: true,
     },
 
-   { type: Date, required: true },
-    
+  birthDate: {
+    type: Date,
+    required: true
+},
     qrCode: String,
     
     password: {
