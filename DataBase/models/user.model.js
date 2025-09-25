@@ -27,6 +27,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+
+    birthDate:{
+        type:date,
+         required: true
+              },
     
     qrCode: String,
     
