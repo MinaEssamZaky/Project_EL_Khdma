@@ -32,7 +32,7 @@ export const applyPromoCode = handleError(async (req, res, next) => {
 
   if (!promoCode) return next(new AppError('Promo code is required', 400));
 
-  const promo = await PromoCode.findOne({ promoCode, isActive: true });
+  const promo = await PromoCodeModel.findOne({ promoCode, isActive: true });
   if (!promo) return next(new AppError('Invalid or inactive promo code', 404));
   if (promo.expiresAt && promo.expiresAt < new Date())
     return next(new AppError('Promo code has expired', 400));
