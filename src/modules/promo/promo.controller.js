@@ -40,7 +40,7 @@ export const applyPromoCode = handleError(async (req, res, next) => {
   const user = await userModel.findById(userId);
   if (!user) return next(new AppError('User not found', 404));
 
-  if (hasUsedPromo(user, promoCode))
+  if (hasUsedPromo(user, promo))
     return next(new AppError('You have already used this promo code', 400));
 
   const previousBalance = user.wallet;
@@ -130,3 +130,9 @@ export const updatePromoCode = handleError(async (req, res, next) => {
     promo: updatedPromo,
   });
 });
+
+function hasUsedPromo(user, promo) {
+  return user.walletHistory.some(
+    (entry) => entry.operation === 'promo' && entry.description === promo.promoCode
+  );
+}
