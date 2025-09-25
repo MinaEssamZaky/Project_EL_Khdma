@@ -8,6 +8,7 @@ const signUpSchemaVal = Joi.object({
     password: Joi.string().min(6).required(),
     rePassword: Joi.valid(Joi.ref("password")).required(),
     phone: Joi.string().length(11).required(),
+    birthDate: Joi.date().less("now").required() 
 });
 
 const LogInSchemaVal = Joi.object({
