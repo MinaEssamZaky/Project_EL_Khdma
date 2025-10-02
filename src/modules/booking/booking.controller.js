@@ -314,9 +314,9 @@ export const deleteBooking = handleError(async (req, res, next) => {
     // 🟢 لو الدفع بالمحفظة → رجع الفلوس
     if (booking.paymentMethod === "wallet") {
       const previousBalance = user.wallet;
-      user.wallet += booking.paidAmount || 0; // رجّع اللي دفعه بس
+      user.wallet += booking.totalAmount; // رجّع اللي دفعه بس
       user.walletHistory.push({
-        amount: booking.paidAmount || 0,
+        amount: booking.totalAmount ,
         operation: "add",
         description: `Refund for cancelled booking: ${booking.eventName}`,
         performedBy: {
