@@ -36,7 +36,7 @@ export const createBookingByWallet = handleError(async (req, res, next) => {
   user.wallet = newBalance;
 
   user.walletHistory.push({
-    totalAmount: totalAmount,
+    amount: totalAmount,
     operation: 'remove',
     description: `Booking for event: ${event.eventName}`,
     performedBy: {
